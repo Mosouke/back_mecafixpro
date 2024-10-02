@@ -1,22 +1,28 @@
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/config');
 const bcrypt = require('bcryptjs');
 
-module.exports = (sequelize, DataTypes) => {
-    const Users = sequelize.define('Users', {
-        user_id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            autoIncrement: true
+const Users = sequelize.define('users', {
+    mail_user: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+        validate: {
+            isEmail: true,
         },
-        user_mail: {
-            type: DataTypes.STRING,
-            unique: true
-        },
-        user_pass: DataTypes.STRING
-    });
+    },
+    password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    fk_role_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+});
 
-    Users.beforeCreate(async (user) => {
-        user.user_pass = await bcrypt.hash(user.user_pass, 10);
-    });
-
-    return Users;
+Users.prototype.comparePassword = async function(password) {
+    return await bcrypt.compare(password, this.password);
 };
+
+module.exports = Users;

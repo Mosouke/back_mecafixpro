@@ -1,25 +1,35 @@
-const { Sequelize, DataTypes } = require('sequelize');
-const config = require('../config/config.json')['development'];
-const sequelize = new Sequelize(config.database, config.username, config.password, {
-    host: config.host,
-    dialect: config.dialect
-});
+const Users = require('./Users');
+const Roles = require('./Roles');
+const sequelize = require('../config/config');
 
-const db = {};
-db.Sequelize = Sequelize;
-db.sequelize = sequelize;
+Users.belongsTo(Roles, { foreignKey: 'fk_role_id', as: 'role' });
+Roles.hasMany(Users, { foreignKey: 'fk_role_id', as: 'users' });
 
+async function initRoles() {
+    const roles = ['client', 'pro_invité', 'pro'];
+    for (const role of roles) {
+        await Roles.findOrCreate({
+            where: { role_name: role },
+            defaults: { role_name: role }
+        });
+    }
+    console.log('Roles initialized');
+}
 
-db.Users = require('./Users')(sequelize, DataTypes);
-db.Clients = require('./Clients')(sequelize, DataTypes);
-db.Cars = require('./Cars')(sequelize, DataTypes);
-const Service = require('./Service');
-const SpecificService = require('./SpecificService');
+async function initDatabase() {
+    try {
+        await sequelize.sync({ force: false });
+        console.log('Database & tables created!');
+        await initRoles();
+    } catch (error) {
+        console.error('Error initializing database:', error);
+    }
+}
 
-Service.hasMany(SpecificService, { foreignKey: 'fk_service_id' });
-SpecificService.belongsTo(Service, { foreignKey: 'fk_service_id' });
+initDatabase();
 
-module.exports = { Service, SpecificService };
-
-
-module.exports = db;
+module.exports = {
+    Users,
+    Roles,
+    sequelize
+};

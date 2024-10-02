@@ -1,37 +1,39 @@
-module.exports = (sequelize, DataTypes) => {
-    const Client = sequelize.define('Client', {
-        client_Id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            autoIncrement: true
-        },
-        client_name: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        client_lastname: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        client_phone_number: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        client_address: {
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
-        fk_user_mail: {
-            type: DataTypes.STRING,
-            references: {
-                model: 'Users',
-                key: 'user_mail',
-            },
-        },
-        client_image_name: {
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
-    });
-    return Client;
-};
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/config');
+
+const Clients = sequelize.define('clients', {
+    client_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        primaryKey: true,
+    },
+    client_image_name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+    },
+    client_name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    client_last_name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    client_phone_number: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        unique: true,
+    },
+    client_address: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    fk_mail_user: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+    },
+});
+
+module.exports = Clients;
