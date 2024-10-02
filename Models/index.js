@@ -1,5 +1,6 @@
 const Users = require('./Users');
 const Roles = require('./Roles');
+const Clients = require('./Clients');
 const sequelize = require('../config/config');
 
 Users.belongsTo(Roles, { foreignKey: 'fk_role_id', as: 'role' });
@@ -31,5 +32,6 @@ initDatabase();
 module.exports = {
     Users,
     Roles,
+    Clients,
     sequelize
 };

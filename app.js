@@ -1,10 +1,12 @@
 const express = require('express');
 const authRoutes = require('./routes/authRoutes');
+const clientRoutes = require('./routes/clientRoutes');
 const { sequelize, Roles } = require('./Models');  
 const app = express();
 
 app.use(express.json());
 app.use('/api/auth', authRoutes);
+app.use('/api/clients', clientRoutes);
 
 const PORT = process.env.PORT || 3000;
 
