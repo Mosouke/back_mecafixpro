@@ -24,9 +24,9 @@ exports.login = async (req, res) => {
 exports.register = async (req, res) => {
     try {
         const { mail_user, password } = req.body;
-        // le mot de pass doit être entre 4 et 30 caractères
-        if (password.length < 4 || password.length > 30) {
-            return res.status(400).json({ message: 'Password must be between 4 and 30 characters long' });
+        // le mot de pass doit être entre 4 et 100 caractères
+        if (password.length < 4 || password.length > 100) {
+            return res.status(400).json({ message: 'Password must be between 4 and 100 characters long' });
         }
         const user = await Users.findOne({ where: { mail_user } });
         if (user) {
