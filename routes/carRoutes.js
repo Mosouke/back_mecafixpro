@@ -8,6 +8,6 @@ router.use(authMiddleware);
 router.get('/', carController.getCars);
 router.get('/:car_id', carController.getCar);
 router.post('/add/:client_id', carController.createCar);
-router.put('/update/:car_id', carController.updateCar);
+router.put('/update/:car_id/:client_id', carController.updateCar);
 
 module.exports = router;
