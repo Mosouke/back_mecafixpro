@@ -25,7 +25,7 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 3000;
 
 async function initRoles() {
-    const roles = ['client', 'pro_invité', 'pro'];
+    const roles = ['client', 'pro_invité', 'pro', 'admin'];
     for (const role of roles) {
         await Roles.findOrCreate({
             where: { role_name: role },

@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-const { Users } = require('../Models');  
+const { Users, Roles } = require('../Models');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -23,7 +23,9 @@ const authMiddleware = async (req, res, next) => {
 
         try {
             const decoded = jwt.verify(token, JWT_SECRET);
-            const user = await Users.findByPk(decoded.userId);  // Utilise "Users" ici
+            const user = await Users.findByPk(decoded.userId, {
+                include: [{ model: Roles, as: 'role' }] // Inclure le modèle de rôle
+            });
 
             if (!user) {
                 return res.status(401).json({
@@ -32,7 +34,7 @@ const authMiddleware = async (req, res, next) => {
                 });
             }
 
-            req.user = user;
+            req.user = user; // Assurez-vous que req.user est défini ici
             next();
         } catch (err) {
             if (err.name === 'TokenExpiredError') {
@@ -58,4 +60,19 @@ const authMiddleware = async (req, res, next) => {
     }
 };
 
-module.exports = authMiddleware;
+const adminMiddleware = async (req, res, next) => {
+    if (!req.user || !req.user.role) {
+        return res.status(403).json({ message: 'Accès refusé, utilisateur non authentifié.' });
+    }
+
+    if (req.user.role.role_name === 'admin') {
+        return next();
+    }
+
+    return res.status(403).json({ message: 'Accès refusé, utilisateur non autorisé.' });
+};
+
+module.exports = {
+    authMiddleware,
+    adminMiddleware
+};

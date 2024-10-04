@@ -13,7 +13,7 @@ Cars.belongsTo(Clients, { foreignKey: 'fk_client_id', targetKey: 'client_id' });
 Clients.hasMany(Cars, { foreignKey: 'fk_client_id', targetKey: 'client_id' });
 
 async function initRoles() {
-    const roles = ['client', 'pro_invité', 'pro'];
+    const roles = ['client', 'pro_invité', 'pro', 'admin'];
     for (const role of roles) {
         await Roles.findOrCreate({
             where: { role_name: role },
