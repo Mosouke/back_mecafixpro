@@ -21,7 +21,7 @@ const Clients = sequelize.define('clients', {
         allowNull: false,
     },
     client_phone_number: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: true,
     },
     client_address: {

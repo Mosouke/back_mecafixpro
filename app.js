@@ -1,12 +1,24 @@
 const express = require('express');
 const authRoutes = require('./routes/authRoutes');
 const clientRoutes = require('./routes/clientRoutes');
-const { sequelize, Roles } = require('./Models');  
+const carRoutes = require('./routes/carRoutes');
+const { sequelize, Roles } = require('./Models');
 const app = express();
 
 app.use(express.json());
+
 app.use('/api/auth', authRoutes);
 app.use('/api/client', clientRoutes);
+app.use('/api/car', carRoutes);
+
+app.use((req, res, next) => {
+    res.status(404).json({ message: 'Route not found' });
+});
+
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ message: 'Internal server error', error: err.message });
+});
 
 const PORT = process.env.PORT || 3000;
 
@@ -18,13 +30,11 @@ async function initRoles() {
             defaults: { role_name: role }
         });
     }
-    console.log('Roles initialized');
 }
 
 async function initApp() {
     try {
-        await sequelize.sync({ force: false, alter: true });
-        console.log('Database synchronized');
+        await sequelize.sync({ force: false, alter: false });
 
         await initRoles();
 
@@ -32,7 +42,7 @@ async function initApp() {
             console.log(`Server is running on port ${PORT}`);
         });
     } catch (error) {
-        console.error('Error initializing app:', error);
+        console.error('Error initializing app:', error.message);
     }
 }
 
