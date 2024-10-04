@@ -2,6 +2,7 @@ const Users = require('./Users');
 const Roles = require('./Roles');
 const Clients = require('./Clients');
 const Cars = require('./Cars');
+const Garages = require('./Garages');
 const sequelize = require('../config/config');
 
 // Associations entre les modèles
@@ -37,6 +38,7 @@ module.exports = {
     Users,
     Roles,
     Clients,
-    Cars, 
+    Cars,
+    Garages, 
     sequelize
 };
