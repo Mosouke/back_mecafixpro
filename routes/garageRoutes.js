@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const garageController = require('../controllers/GaragesController');
-const { authMiddleware, adminMiddleware } = require('../middleware/auth');  // Import correct des middlewares
+const { authMiddleware, adminMiddleware } = require('../middleware/auth');
 
 
 router.get('/', garageController.getGarages);

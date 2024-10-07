@@ -3,14 +3,18 @@ const Roles = require('./Roles');
 const Clients = require('./Clients');
 const Cars = require('./Cars');
 const Garages = require('./Garages');
+const Services = require('./Services');
 const sequelize = require('../config/config');
 
-// Associations entre les modèles
 Users.belongsTo(Roles, { foreignKey: 'fk_role_id', as: 'role' });
 Roles.hasMany(Users, { foreignKey: 'fk_role_id', as: 'users' });
 
 Cars.belongsTo(Clients, { foreignKey: 'fk_client_id', targetKey: 'client_id' });
 Clients.hasMany(Cars, { foreignKey: 'fk_client_id', targetKey: 'client_id' });
+
+// Assurez-vous que l'importation de Services est après la définition de Garages
+Services.belongsTo(Garages, { foreignKey: 'fk_garage_id', targetKey: 'garage_id' });
+Garages.hasMany(Services, { foreignKey: 'fk_garage_id', targetKey: 'garage_id' });
 
 async function initRoles() {
     const roles = ['client', 'pro_invité', 'pro', 'admin'];
@@ -18,7 +22,7 @@ async function initRoles() {
         await Roles.findOrCreate({
             where: { role_name: role },
             defaults: { role_name: role },
-            logging: false // Correction ici
+            logging: false 
         });
     }
 }
@@ -39,6 +43,7 @@ module.exports = {
     Roles,
     Clients,
     Cars,
-    Garages, 
+    Garages,
+    Services, 
     sequelize
 };

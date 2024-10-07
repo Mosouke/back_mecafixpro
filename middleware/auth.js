@@ -24,7 +24,7 @@ const authMiddleware = async (req, res, next) => {
         try {
             const decoded = jwt.verify(token, JWT_SECRET);
             const user = await Users.findByPk(decoded.userId, {
-                include: [{ model: Roles, as: 'role' }] // Inclure le modèle de rôle
+                include: [{ model: Roles, as: 'role' }] 
             });
 
             if (!user) {
@@ -34,7 +34,7 @@ const authMiddleware = async (req, res, next) => {
                 });
             }
 
-            req.user = user; // Assurez-vous que req.user est défini ici
+            req.user = user; 
             next();
         } catch (err) {
             if (err.name === 'TokenExpiredError') {

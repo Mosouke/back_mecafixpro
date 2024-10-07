@@ -96,7 +96,7 @@ exports.updateGarage = async (req, res) => {
 
 exports.getGaragesByCity = async (req, res) => {
     try {
-        const { city } = req.params; // Utilise req.params au lieu de req.query
+        const { city } = req.params; 
         const garages = await Garages.findAll({
             where: {
                 garage_city: city 
