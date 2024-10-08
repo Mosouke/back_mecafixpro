@@ -8,12 +8,8 @@ const Appointments = sequelize.define('appointments', {
         autoIncrement: true,
         primaryKey: true,
     },
-    appt_date: {
+    appt_date_time: {
         type: DataTypes.DATE,
-        allowNull: false,
-    },
-    appt_time: {
-        type: DataTypes.TIME,
         allowNull: false,
     },
     appt_status: {

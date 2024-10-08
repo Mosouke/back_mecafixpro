@@ -30,16 +30,15 @@ exports.getAppointmentById = async (req, res) => {
 
 exports.createAppointment = async (req, res) => {
     try {
-        const { appt_date, appt_time, appt_status, appt_comment, fk_garage_id, fk_client_id, fk_service_id, fk_specific_service_id } = req.body;
+        const { appt_date_time, appt_status, appt_comment, fk_garage_id, fk_client_id, fk_service_id, fk_specific_service_id } = req.body;
 
-        if (!appt_date || !appt_time || !appt_status || !fk_garage_id || !fk_client_id || !fk_service_id || !fk_specific_service_id) {
+        if (!appt_date_time || !appt_status || !fk_garage_id || !fk_client_id || !fk_service_id || !fk_specific_service_id) {
             console.error('Missing required fields');
             return res.status(400).json({ message: 'Missing required fields' });
         }
 
         const appointment = await Appointments.create({
-            appt_date,
-            appt_time,
+            appt_date_time,
             appt_status,
             appt_comment,
             fk_garage_id,
@@ -66,8 +65,7 @@ exports.updateAppointment = async (req, res) => {
 
         const [updated] = await Appointments.update(
             {
-                appt_date,
-                appt_time,
+                appt_date_time,
                 appt_status,
                 appt_comment,
                 fk_garage_id,
