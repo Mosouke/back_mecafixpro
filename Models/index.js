@@ -5,6 +5,7 @@ const Cars = require('./Cars');
 const Garages = require('./Garages');
 const Services = require('./Services');
 const SpecificServices = require('./SpecificServices');
+const Appointments = require('./Appointments');
 const sequelize = require('../config/config');
 
 Users.belongsTo(Roles, { foreignKey: 'fk_role_id', as: 'role' });
@@ -49,6 +50,7 @@ module.exports = {
     Cars,
     Garages,
     Services,
-    SpecificServices, 
+    SpecificServices,
+    Appointments, 
     sequelize
 };

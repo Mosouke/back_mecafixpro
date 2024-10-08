@@ -22,7 +22,7 @@ const Appointments = sequelize.define('appointments', {
     },
     appt_comment: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     fk_client_id: {
         type: DataTypes.INTEGER,
@@ -42,9 +42,14 @@ const Appointments = sequelize.define('appointments', {
     },
 });
 
-Appointments.belongsTo(Clients, { foreignKey: 'fk_client_id', targetKey: 'client_id' });
-Appointments.belongsTo(Garages, { foreignKey: 'fk_garage_id', targetKey: 'garage_id' });
-Appointments.belongsTo(Services, { foreignKey: 'fk_service_id', targetKey: 'service_id' });
-Appointments.belongsTo(SpecificServices, { foreignKey: 'fk_specific_service_id', targetKey: 'specificService_id' });
+const Client = require('./Clients');
+const Garage = require('./Garages');
+const Service = require('./Services');
+const SpecificService = require('./SpecificServices');
+
+Appointments.belongsTo(Client, { foreignKey: 'fk_client_id', targetKey: 'client_id' });
+Appointments.belongsTo(Garage, { foreignKey: 'fk_garage_id', targetKey: 'garage_id' });
+Appointments.belongsTo(Service, { foreignKey: 'fk_service_id', targetKey: 'service_id' });
+Appointments.belongsTo(SpecificService, { foreignKey: 'fk_specific_service_id', targetKey: 'specificService_id' });
 
 module.exports = Appointments;

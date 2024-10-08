@@ -5,6 +5,7 @@ const carRoutes = require('./routes/carRoutes');
 const garageRoutes = require('./routes/garageRoutes');
 const serviceRoutes = require('./routes/serviceRoutes');
 const specificServiceRoutes = require('./routes/specificServicesRoutes');
+const appointmentRoutes = require('./routes/appointmentRoutes');
 const { sequelize, Roles } = require('./Models');
 const app = express();
 
@@ -16,6 +17,7 @@ app.use('/api/car', carRoutes);
 app.use('/api/garage', garageRoutes);
 app.use('/api/service', serviceRoutes);
 app.use('/api/specifiqueService', specificServiceRoutes);
+app.use('/api/appointment', appointmentRoutes);
 
 app.use((req, res, next) => {
     res.status(404).json({ message: 'Route not found' });
