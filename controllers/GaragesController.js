@@ -1,5 +1,18 @@
+// @ts-nocheck
 const Garages = require('../Models/Garages');
 
+/**
+ * @module controllers/garageController
+ */
+
+/**
+ * Get all garages.
+ * 
+ * @function getGarages
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} res - Response object containing all garages or an error message
+ */
 exports.getGarages = async (req, res) => {
     try {
         const garages = await Garages.findAll();
@@ -10,6 +23,14 @@ exports.getGarages = async (req, res) => {
     }
 };
 
+/**
+ * Get a specific garage by ID.
+ * 
+ * @function getGarage
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} res - Response object containing the garage or an error message
+ */
 exports.getGarage = async (req, res) => {
     try {
         const { garage_id } = req.params;
@@ -24,11 +45,19 @@ exports.getGarage = async (req, res) => {
     }
 };
 
+/**
+ * Create a new garage.
+ * 
+ * @function createGarage
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} res - Response object containing the created garage or an error message
+ */
 exports.createGarage = async (req, res) => {
     try {
         const { garage_name, garage_address, garage_phone, garage_city, garage_postal_code } = req.body;
         
-        if (!garage_name || !garage_address || !garage_phone || !garage_city || !garage_postal_code /* || !eval_id */) {
+        if (!garage_name || !garage_address || !garage_phone || !garage_city || !garage_postal_code) {
             console.error('Missing required fields');
             return res.status(400).json({ message: 'Missing required fields' });
         }
@@ -57,9 +86,17 @@ exports.createGarage = async (req, res) => {
     }
 };
 
+/**
+ * Update an existing garage by ID.
+ * 
+ * @function updateGarage
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} res - Response object containing the updated garage or an error message
+ */
 exports.updateGarage = async (req, res) => {
     try {
-        const { garage_id /* , eval_id */ } = req.params;  // je conserve eval_id pour l'utilisation future
+        const { garage_id } = req.params;  // je conserve eval_id pour l'utilisation future
         const { garage_name, garage_address, garage_phone, garage_city, garage_postal_code } = req.body;
 
         // Vérifie si l'évaluation existe (à décommenter plus tard)
@@ -94,6 +131,14 @@ exports.updateGarage = async (req, res) => {
     }
 };
 
+/**
+ * Get garages by city.
+ * 
+ * @function getGaragesByCity
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} res - Response object containing garages in the specified city or an error message
+ */
 exports.getGaragesByCity = async (req, res) => {
     try {
         const { city } = req.params; 

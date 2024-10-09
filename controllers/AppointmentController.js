@@ -1,15 +1,36 @@
+// @ts-nocheck
 const Appointments = require('../Models/Appointments');
 
+/**
+ * @module controllers/appointmentController
+ */
+
+/**
+ * Get all appointments.
+ * 
+ * @function getAllAppointments
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} res - Response object containing all appointments or an error message
+ */
 exports.getAllAppointments = async (req, res) => {
     try {
-        const appointment = await Appointments.findAll();
-        res.status(200).json(appointment);
+        const appointments = await Appointments.findAll();
+        res.status(200).json(appointments);
     } catch (error) {
         console.error('Error fetching appointments:', error);
         res.status(500).json({ error: error.message });
     }
 };
 
+/**
+ * Get an appointment by its ID.
+ * 
+ * @function getAppointmentById
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} res - Response object containing the appointment or an error message
+ */
 exports.getAppointmentById = async (req, res) => {
     try {
         const { appt_id } = req.params;  
@@ -27,7 +48,14 @@ exports.getAppointmentById = async (req, res) => {
     }
 };
 
-
+/**
+ * Create a new appointment.
+ * 
+ * @function createAppointment
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} res - Response object containing the created appointment or an error message
+ */
 exports.createAppointment = async (req, res) => {
     try {
         const { appt_date_time, appt_status, appt_comment, fk_garage_id, fk_client_id, fk_service_id, fk_specific_service_id } = req.body;
@@ -54,12 +82,20 @@ exports.createAppointment = async (req, res) => {
     }
 };
 
+/**
+ * Update an existing appointment.
+ * 
+ * @function updateAppointment
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} res - Response object containing the updated appointment or an error message
+ */
 exports.updateAppointment = async (req, res) => {
     try {
         const { appt_id } = req.params;
-        const { appt_date, appt_time, appt_status, appt_comment, fk_garage_id, fk_client_id, fk_service_id, fk_specific_service_id } = req.body;
+        const { appt_date_time, appt_status, appt_comment, fk_garage_id, fk_client_id, fk_service_id, fk_specific_service_id } = req.body;
 
-        if (!appt_date || !appt_time || !appt_status || !fk_garage_id || !fk_client_id || !fk_service_id || !fk_specific_service_id) {
+        if (!appt_date_time || !appt_status || !fk_garage_id || !fk_client_id || !fk_service_id || !fk_specific_service_id) {
             return res.status(400).json({ message: 'Missing required fields' });
         }
 
@@ -88,6 +124,14 @@ exports.updateAppointment = async (req, res) => {
     }
 };
 
+/**
+ * Delete an appointment by its ID.
+ * 
+ * @function deleteAppointment
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} res - Response object indicating the appointment was deleted or an error message
+ */
 exports.deleteAppointment = async (req, res) => {
     try {
         const { appt_id } = req.params;

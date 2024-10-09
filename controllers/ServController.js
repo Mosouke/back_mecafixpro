@@ -1,6 +1,18 @@
+// @ts-nocheck
 const { Services, Garages } = require('../Models');
 
-// Récupérer tous les services
+/**
+ * @module controllers/serviceController
+ */
+
+/**
+ * Get all services.
+ * 
+ * @function getServices
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} res - Response object containing all services or an error message
+ */
 exports.getServices = async (req, res) => {
     try {
         const services = await Services.findAll();
@@ -11,7 +23,14 @@ exports.getServices = async (req, res) => {
     }
 };
 
-// Récupérer un service par ID
+/**
+ * Get a specific service by ID.
+ * 
+ * @function getService
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} res - Response object containing the service or an error message
+ */
 exports.getService = async (req, res) => {
     try {
         const { service_id } = req.params;
@@ -26,6 +45,14 @@ exports.getService = async (req, res) => {
     }
 };
 
+/**
+ * Create new services from an array of service names.
+ * 
+ * @function createService
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} res - Response object indicating the services were created successfully or an error message
+ */
 exports.createService = async (req, res) => {
     try {
         const { service_name } = req.body; 
@@ -37,8 +64,8 @@ exports.createService = async (req, res) => {
 
         for (let name of service_name) {
             console.log('Creating service:', name); 
-            const services = await Services.create({ service_name: name, fk_garage_id: null });
-            console.log('Service created:', services); 
+            const service = await Services.create({ service_name: name, fk_garage_id: null });
+            console.log('Service created:', service); 
         }
 
         res.status(201).json({ message: 'Services created successfully' });
@@ -48,15 +75,22 @@ exports.createService = async (req, res) => {
     }
 };
 
-// Mettre à jour un service et optionnellement l'associer à un garage
+/**
+ * Update an existing service and optionally associate it with a garage.
+ * 
+ * @function updateService
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} res - Response object containing the updated service or an error message
+ */
 exports.updateService = async (req, res) => {
     try {
         const { service_id } = req.params;
-        const { service_name, garage_id } = req.body;  // garage_id ajouté pour permettre l'assignation lors de la mise à jour
+        const { service_name, garage_id } = req.body;  // garage_id added for optional association
 
-        // Mise à jour du service
+        // Update the service
         const [updated] = await Services.update(
-            { service_name, fk_garage_id: garage_id || null }, // Si garage_id est fourni, l'assigner ; sinon, garder null
+            { service_name, fk_garage_id: garage_id || null }, // Assign garage_id if provided; otherwise, keep null
             { where: { service_id } }
         );
 

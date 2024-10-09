@@ -1,5 +1,18 @@
+// @ts-nocheck
 const { Cars, Clients } = require('../Models');
 
+/**
+ * @module controllers/carController
+ */
+
+/**
+ * Get all cars.
+ * 
+ * @function getCars
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} res - Response object containing all cars or an error message
+ */
 exports.getCars = async (req, res) => {
     try {
         const cars = await Cars.findAll();
@@ -10,6 +23,14 @@ exports.getCars = async (req, res) => {
     }
 };
 
+/**
+ * Get a specific car by ID.
+ * 
+ * @function getCar
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} res - Response object containing the car or an error message
+ */
 exports.getCar = async (req, res) => {
     try {
         const { car_id } = req.params;
@@ -24,6 +45,14 @@ exports.getCar = async (req, res) => {
     }
 };
 
+/**
+ * Create a new car associated with a client.
+ * 
+ * @function createCar
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} res - Response object containing the created car or an error message
+ */
 exports.createCar = async (req, res) => {
     try {
         const { car_marque, car_modele, car_year } = req.body;
@@ -32,7 +61,6 @@ exports.createCar = async (req, res) => {
         if (!car_marque || !car_modele || !car_year || !client_id) {
             console.error('Missing required fields');
             return res.status(400).json({ message: 'Missing required fields' });
-            
         }
 
         const client = await Clients.findOne({ where: { client_id } });
@@ -54,7 +82,14 @@ exports.createCar = async (req, res) => {
     }
 };
 
-
+/**
+ * Update an existing car by ID.
+ * 
+ * @function updateCar
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} res - Response object containing the updated car or an error message
+ */
 exports.updateCar = async (req, res) => {
     try {
         const { car_id, client_id } = req.params;  
@@ -81,4 +116,3 @@ exports.updateCar = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-

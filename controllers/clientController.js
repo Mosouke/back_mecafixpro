@@ -1,5 +1,18 @@
+// @ts-nocheck
 const { Clients, Users } = require('../Models');
 
+/**
+ * @module controllers/clientController
+ */
+
+/**
+ * Get all clients.
+ * 
+ * @function getClients
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} res - Response object containing all clients or an error message
+ */
 exports.getClients = async (req, res) => {
     try {
         const clients = await Clients.findAll();
@@ -10,6 +23,14 @@ exports.getClients = async (req, res) => {
     }
 };
 
+/**
+ * Get a specific client by ID.
+ * 
+ * @function getClient
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} res - Response object containing the client or an error message
+ */
 exports.getClient = async (req, res) => {
     try {
         const { client_id } = req.params;
@@ -24,8 +45,15 @@ exports.getClient = async (req, res) => {
     }
 };
 
+/**
+ * Create a new client.
+ * 
+ * @function createClient
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} res - Response object containing the created client or an error message
+ */
 exports.createClient = async (req, res) => {
-    
     try {
         const userEmail = req.user.mail_user;  
         if (!userEmail) {
@@ -56,7 +84,14 @@ exports.createClient = async (req, res) => {
     }
 };
 
-
+/**
+ * Update an existing client by ID.
+ * 
+ * @function updateClient
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} res - Response object containing the updated client or an error message
+ */
 exports.updateClient = async (req, res) => {    
     try {
         const { client_id } = req.params;

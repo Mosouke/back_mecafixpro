@@ -1,3 +1,4 @@
+// @ts-nocheck
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const { Users, Roles } = require('../Models');
@@ -8,6 +9,15 @@ if (!JWT_SECRET) {
     throw new Error('JWT_SECRET must be defined in environment variables');
 }
 
+/**
+ * Middleware for authenticating users based on JWT token.
+ * @async
+ * @function authMiddleware
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @param {Function} next - The next middleware function.
+ * @returns {Promise<void>} - Calls next middleware or responds with an error.
+ */
 const authMiddleware = async (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
@@ -60,6 +70,15 @@ const authMiddleware = async (req, res, next) => {
     }
 };
 
+/**
+ * Middleware to check if the authenticated user has admin privileges.
+ * @async
+ * @function adminMiddleware
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @param {Function} next - The next middleware function.
+ * @returns {Promise<void>} - Calls next middleware or responds with an error.
+ */
 const adminMiddleware = async (req, res, next) => {
     if (!req.user || !req.user.role) {
         return res.status(403).json({ message: 'Accès refusé, utilisateur non authentifié.' });
