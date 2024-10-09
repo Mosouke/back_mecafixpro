@@ -35,4 +35,5 @@
 
 ## Dossier Middlewares
 -[middlewares](./middlewares)
---[auth](./middlewares/auth.js)          
+--[auth](./middlewares/auth.js)
+--[validator](./middleware/validator.js)          

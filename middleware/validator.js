@@ -3,13 +3,13 @@ console.log("Fichier de validation chargé");
 
 /**
  * Validation réutilisable pour les emails.
- * @type {import('express-validator').ValidationChain}
+ * @type {ValidationChain} // Remplacez l'importation dynamique par le type simple
  */
 const validateEmail = check('mail_user').isEmail().withMessage('Email invalide');
 
 /**
  * Validation réutilisable pour les mots de passe.
- * @type {Array<import('express-validator').ValidationChain>}
+ * @type {Array<ValidationChain>} // Remplacez l'importation dynamique par le type simple
  */
 const validatePassword = [
     check('password')
@@ -20,25 +20,25 @@ const validatePassword = [
 
 /**
  * Validations pour la création d'un utilisateur.
- * @type {Array<import('express-validator').ValidationChain>}
+ * @type {Array<ValidationChain>} // Remplacez l'importation dynamique par le type simple
  */
 const validateUserCreation = [validateEmail, ...validatePassword];
 
 /**
  * Validations pour la connexion d'un utilisateur.
- * @type {Array<import('express-validator').ValidationChain>}
+ * @type {Array<ValidationChain>} // Remplacez l'importation dynamique par le type simple
  */
 const validateUserLogin = [validateEmail, ...validatePassword];
 
 /**
  * Validations pour la mise à jour d'un utilisateur.
- * @type {Array<import('express-validator').ValidationChain>}
+ * @type {Array<ValidationChain>} // Remplacez l'importation dynamique par le type simple
  */
 const validateUserUpdate = [validateEmail, ...validatePassword];
 
 /**
  * Validations pour la création d'un client.
- * @type {Array<import('express-validator').ValidationChain>}
+ * @type {Array<ValidationChain>} // Remplacez l'importation dynamique par le type simple
  */
 const validateClientCreation = [
     check('client_name')
@@ -58,7 +58,7 @@ const validateClientCreation = [
 
 /**
  * Validations pour la mise à jour d'un client.
- * @type {Array<import('express-validator').ValidationChain>}
+ * @type {Array<ValidationChain>} // Remplacez l'importation dynamique par le type simple
  */
 const validateClientUpdate = [
     check('client_name')
