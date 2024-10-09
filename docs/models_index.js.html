@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: models/index.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: models/index.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// @ts-nocheck
+const Users = require('./Users');
+const Roles = require('./Roles');
+const Clients = require('./Clients');
+const Cars = require('./Cars');
+const Garages = require('./Garages');
+const Services = require('./Services');
+const SpecificServices = require('./SpecificServices');
+const Appointments = require('./Appointments');
+const sequelize = require('../config/config');
+
+/**
+ * Establishes relationships between models.
+ * - Users belong to a Role.
+ * - Roles have many Users.
+ * - Cars belong to a Client.
+ * - Clients have many Cars.
+ * - Services belong to a Garage.
+ * - Garages have many Services.
+ * - SpecificServices belong to a Service.
+ * - Services have many SpecificServices.
+ */
+
+// Users belong to Roles
+Users.belongsTo(Roles, { foreignKey: 'fk_role_id', as: 'role' });
+Roles.hasMany(Users, { foreignKey: 'fk_role_id', as: 'users' });
+
+// Cars belong to Clients
+Cars.belongsTo(Clients, { foreignKey: 'fk_client_id', targetKey: 'client_id' });
+Clients.hasMany(Cars, { foreignKey: 'fk_client_id', targetKey: 'client_id' });
+
+// Services belong to Garages
+Services.belongsTo(Garages, { foreignKey: 'fk_garage_id', targetKey: 'garage_id' });
+Garages.hasMany(Services, { foreignKey: 'fk_garage_id', targetKey: 'garage_id' });
+
+// SpecificServices belong to Services
+SpecificServices.belongsTo(Services, { foreignKey: 'fk_service_id', targetKey: 'service_id' });
+Services.hasMany(SpecificServices, { foreignKey: 'fk_service_id', targetKey: 'service_id' });
+
+/**
+ * Initializes predefined roles in the database.
+ * @async
+ * @function initRoles
+ * @returns {Promise&lt;void>}
+ */
+async function initRoles() {
+    const roles = ['client', 'pro_invité', 'pro', 'admin'];
+    for (const role of roles) {
+        await Roles.findOrCreate({
+            where: { role_name: role },
+            defaults: { role_name: role },
+            logging: false 
+        });
+    }
+}
+
+/**
+ * Initializes the database by syncing models and creating predefined roles.
+ * @async
+ * @function initDatabase
+ * @returns {Promise&lt;void>}
+ */
+async function initDatabase() {
+    try {
+        await sequelize.sync({ force: false });
+        await initRoles();
+    } catch (error) {
+        console.error('Error initializing database:', error);
+    }
+}
+
+// Start the database initialization
+initDatabase();
+
+/**
+ * Exporting all models and sequelize instance for further usage.
+ * @module Models
+ * @exports {Object} - All models and sequelize instance
+ */
+module.exports = {
+    Users,
+    Roles,
+    Clients,
+    Cars,
+    Garages,
+    Services,
+    SpecificServices,
+    Appointments,
+    sequelize
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Models.html">Models</a></li><li><a href="module-controllers_appointmentController.html">controllers/appointmentController</a></li><li><a href="module-controllers_authController.html">controllers/authController</a></li><li><a href="module-controllers_carController.html">controllers/carController</a></li><li><a href="module-controllers_clientController.html">controllers/clientController</a></li><li><a href="module-controllers_garageController.html">controllers/garageController</a></li><li><a href="module-controllers_serviceController.html">controllers/serviceController</a></li><li><a href="module-controllers_specificServiceController.html">controllers/specificServiceController</a></li><li><a href="module-routes_appointments.html">routes/appointments</a></li><li><a href="module-routes_garages.html">routes/garages</a></li><li><a href="module-routes_services.html">routes/services</a></li><li><a href="module-routes_specificServices.html">routes/specificServices</a></li></ul><h3>Global</h3><ul><li><a href="global.html#adminMiddleware">adminMiddleware</a></li><li><a href="global.html#appt_comment">appt_comment</a></li><li><a href="global.html#appt_date_time">appt_date_time</a></li><li><a href="global.html#appt_id">appt_id</a></li><li><a href="global.html#appt_status">appt_status</a></li><li><a href="global.html#authMiddleware">authMiddleware</a></li><li><a href="global.html#car_id">car_id</a></li><li><a href="global.html#car_marque">car_marque</a></li><li><a href="global.html#car_modele">car_modele</a></li><li><a href="global.html#car_year">car_year</a></li><li><a href="global.html#client_address">client_address</a></li><li><a href="global.html#client_id">client_id</a></li><li><a href="global.html#client_image_name">client_image_name</a></li><li><a href="global.html#client_last_name">client_last_name</a></li><li><a href="global.html#client_name">client_name</a></li><li><a href="global.html#client_phone_number">client_phone_number</a></li><li><a href="global.html#fk_client_id">fk_client_id</a></li><li><a href="global.html#fk_eval_id">fk_eval_id</a></li><li><a href="global.html#fk_garage_id">fk_garage_id</a></li><li><a href="global.html#fk_mail_user">fk_mail_user</a></li><li><a href="global.html#fk_service_id">fk_service_id</a></li><li><a href="global.html#fk_specific_service_id">fk_specific_service_id</a></li><li><a href="global.html#garage_address">garage_address</a></li><li><a href="global.html#garage_city">garage_city</a></li><li><a href="global.html#garage_id">garage_id</a></li><li><a href="global.html#garage_name">garage_name</a></li><li><a href="global.html#garage_phone">garage_phone</a></li><li><a href="global.html#garage_postal_code">garage_postal_code</a></li><li><a href="global.html#initDatabase">initDatabase</a></li><li><a href="global.html#initRoles">initRoles</a></li><li><a href="global.html#role_id">role_id</a></li><li><a href="global.html#role_name">role_name</a></li><li><a href="global.html#service_id">service_id</a></li><li><a href="global.html#service_name">service_name</a></li><li><a href="global.html#specificService_id">specificService_id</a></li><li><a href="global.html#specificService_name">specificService_name</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Wed Oct 09 2024 12:13:19 GMT+0200 (heure d’été d’Europe centrale)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

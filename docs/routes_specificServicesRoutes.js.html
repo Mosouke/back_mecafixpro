@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: routes/specificServicesRoutes.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: routes/specificServicesRoutes.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// @ts-nocheck
+const express = require('express');
+const router = express.Router();
+const specificServicesController = require('../controllers/SpecificServicesControllers');
+const { authMiddleware, adminMiddleware } = require('../middleware/auth');
+
+/**
+ * @module routes/specificServices
+ */
+
+/**
+ * @route GET /specific-services
+ * @group Specific Services - Operations about specific services
+ * @returns {Array.&lt;SpecificService>} 200 - An array of specific services
+ * @returns {Error}  default - Unexpected error
+ */
+router.get('/', specificServicesController.getSpecificServices);
+
+/**
+ * @route GET /specific-services/{specificServices_id}
+ * @param {number} specificServices_id.path.required - ID du service spécifique
+ * @group Specific Services - Operations about specific services
+ * @returns {SpecificService} 200 - Un service spécifique
+ * @returns {Error}  default - Service spécifique non trouvé
+ */
+router.get('/:specificServices_id', specificServicesController.getSpecificService);
+
+/**
+ * @route POST /specific-services/add
+ * @group Specific Services - Operations about specific services
+ * @param {SpecificService.model} SpecificService.body.required - Service spécifique à ajouter
+ * @security JWT
+ * @returns {SpecificService} 201 - Service spécifique créé
+ * @returns {Error}  default - Unexpected error
+ */
+router.post('/add', authMiddleware, adminMiddleware, specificServicesController.createSpecificServices);
+
+/**
+ * @route PUT /specific-services/update/{specificServices_id}
+ * @param {number} specificServices_id.path.required - ID du service spécifique
+ * @param {SpecificService.model} SpecificService.body.required - Service spécifique à mettre à jour
+ * @security JWT
+ * @group Specific Services - Operations about specific services
+ * @returns {SpecificService} 200 - Service spécifique mis à jour
+ * @returns {Error}  default - Service spécifique non trouvé ou mise à jour échouée
+ */
+router.put('/update/:specificServices_id', authMiddleware, adminMiddleware, specificServicesController.updateSpecificService);
+
+module.exports = router;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Models.html">Models</a></li><li><a href="module-controllers_appointmentController.html">controllers/appointmentController</a></li><li><a href="module-controllers_authController.html">controllers/authController</a></li><li><a href="module-controllers_carController.html">controllers/carController</a></li><li><a href="module-controllers_clientController.html">controllers/clientController</a></li><li><a href="module-controllers_garageController.html">controllers/garageController</a></li><li><a href="module-controllers_serviceController.html">controllers/serviceController</a></li><li><a href="module-controllers_specificServiceController.html">controllers/specificServiceController</a></li><li><a href="module-routes_appointments.html">routes/appointments</a></li><li><a href="module-routes_garages.html">routes/garages</a></li><li><a href="module-routes_services.html">routes/services</a></li><li><a href="module-routes_specificServices.html">routes/specificServices</a></li></ul><h3>Global</h3><ul><li><a href="global.html#adminMiddleware">adminMiddleware</a></li><li><a href="global.html#appt_comment">appt_comment</a></li><li><a href="global.html#appt_date_time">appt_date_time</a></li><li><a href="global.html#appt_id">appt_id</a></li><li><a href="global.html#appt_status">appt_status</a></li><li><a href="global.html#authMiddleware">authMiddleware</a></li><li><a href="global.html#car_id">car_id</a></li><li><a href="global.html#car_marque">car_marque</a></li><li><a href="global.html#car_modele">car_modele</a></li><li><a href="global.html#car_year">car_year</a></li><li><a href="global.html#client_address">client_address</a></li><li><a href="global.html#client_id">client_id</a></li><li><a href="global.html#client_image_name">client_image_name</a></li><li><a href="global.html#client_last_name">client_last_name</a></li><li><a href="global.html#client_name">client_name</a></li><li><a href="global.html#client_phone_number">client_phone_number</a></li><li><a href="global.html#fk_client_id">fk_client_id</a></li><li><a href="global.html#fk_eval_id">fk_eval_id</a></li><li><a href="global.html#fk_garage_id">fk_garage_id</a></li><li><a href="global.html#fk_mail_user">fk_mail_user</a></li><li><a href="global.html#fk_service_id">fk_service_id</a></li><li><a href="global.html#fk_specific_service_id">fk_specific_service_id</a></li><li><a href="global.html#garage_address">garage_address</a></li><li><a href="global.html#garage_city">garage_city</a></li><li><a href="global.html#garage_id">garage_id</a></li><li><a href="global.html#garage_name">garage_name</a></li><li><a href="global.html#garage_phone">garage_phone</a></li><li><a href="global.html#garage_postal_code">garage_postal_code</a></li><li><a href="global.html#initDatabase">initDatabase</a></li><li><a href="global.html#initRoles">initRoles</a></li><li><a href="global.html#role_id">role_id</a></li><li><a href="global.html#role_name">role_name</a></li><li><a href="global.html#service_id">service_id</a></li><li><a href="global.html#service_name">service_name</a></li><li><a href="global.html#specificService_id">specificService_id</a></li><li><a href="global.html#specificService_name">specificService_name</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Wed Oct 09 2024 12:13:19 GMT+0200 (heure d’été d’Europe centrale)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

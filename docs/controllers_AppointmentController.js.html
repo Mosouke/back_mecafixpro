@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: controllers/AppointmentController.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: controllers/AppointmentController.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// @ts-nocheck
+const Appointments = require('../Models/Appointments');
+
+/**
+ * @module controllers/appointmentController
+ */
+
+/**
+ * Get all appointments.
+ * 
+ * @function getAllAppointments
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} res - Response object containing all appointments or an error message
+ */
+exports.getAllAppointments = async (req, res) => {
+    try {
+        const appointments = await Appointments.findAll();
+        res.status(200).json(appointments);
+    } catch (error) {
+        console.error('Error fetching appointments:', error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+/**
+ * Get an appointment by its ID.
+ * 
+ * @function getAppointmentById
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} res - Response object containing the appointment or an error message
+ */
+exports.getAppointmentById = async (req, res) => {
+    try {
+        const { appt_id } = req.params;  
+        if (!appt_id) {
+            return res.status(400).json({ message: 'Appointment ID is missing' });
+        }
+        const appointment = await Appointments.findOne({ where: { appt_id } });
+        if (!appointment) {
+            return res.status(404).json({ message: 'Appointment not found' });
+        }
+        res.status(200).json(appointment);
+    } catch (error) {
+        console.error('Error fetching appointment:', error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+/**
+ * Create a new appointment.
+ * 
+ * @function createAppointment
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} res - Response object containing the created appointment or an error message
+ */
+exports.createAppointment = async (req, res) => {
+    try {
+        const { appt_date_time, appt_status, appt_comment, fk_garage_id, fk_client_id, fk_service_id, fk_specific_service_id } = req.body;
+
+        if (!appt_date_time || !appt_status || !fk_garage_id || !fk_client_id || !fk_service_id || !fk_specific_service_id) {
+            console.error('Missing required fields');
+            return res.status(400).json({ message: 'Missing required fields' });
+        }
+
+        const appointment = await Appointments.create({
+            appt_date_time,
+            appt_status,
+            appt_comment,
+            fk_garage_id,
+            fk_client_id,
+            fk_service_id,
+            fk_specific_service_id
+        });
+
+        res.status(201).json(appointment);
+    } catch (error) {
+        console.error('Error creating appointment:', error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+/**
+ * Update an existing appointment.
+ * 
+ * @function updateAppointment
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} res - Response object containing the updated appointment or an error message
+ */
+exports.updateAppointment = async (req, res) => {
+    try {
+        const { appt_id } = req.params;
+        const { appt_date_time, appt_status, appt_comment, fk_garage_id, fk_client_id, fk_service_id, fk_specific_service_id } = req.body;
+
+        if (!appt_date_time || !appt_status || !fk_garage_id || !fk_client_id || !fk_service_id || !fk_specific_service_id) {
+            return res.status(400).json({ message: 'Missing required fields' });
+        }
+
+        const [updated] = await Appointments.update(
+            {
+                appt_date_time,
+                appt_status,
+                appt_comment,
+                fk_garage_id,
+                fk_client_id,
+                fk_service_id,
+                fk_specific_service_id
+            },
+            { where: { appt_id } }
+        );
+
+        if (updated === 0) {
+            return res.status(404).json({ message: 'Appointment not found' });
+        }
+
+        const updatedAppointment = await Appointments.findOne({ where: { appt_id } });
+        res.status(200).json(updatedAppointment);
+    } catch (error) {
+        console.error('Error updating appointment:', error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+/**
+ * Delete an appointment by its ID.
+ * 
+ * @function deleteAppointment
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} res - Response object indicating the appointment was deleted or an error message
+ */
+exports.deleteAppointment = async (req, res) => {
+    try {
+        const { appt_id } = req.params;
+        const appointment = await Appointments.findOne({ where: { appt_id } });
+        if (!appointment) {
+            return res.status(404).json({ message: 'Appointment not found' });
+        }
+        await Appointments.destroy({ where: { appt_id } });
+        res.status(204).json({ message: 'Appointment deleted' });
+    } catch (error) {
+        console.error('Error deleting appointment:', error);
+        res.status(500).json({ error: error.message });
+    }
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Models.html">Models</a></li><li><a href="module-controllers_appointmentController.html">controllers/appointmentController</a></li><li><a href="module-controllers_authController.html">controllers/authController</a></li><li><a href="module-controllers_carController.html">controllers/carController</a></li><li><a href="module-controllers_clientController.html">controllers/clientController</a></li><li><a href="module-controllers_garageController.html">controllers/garageController</a></li><li><a href="module-controllers_serviceController.html">controllers/serviceController</a></li><li><a href="module-controllers_specificServiceController.html">controllers/specificServiceController</a></li><li><a href="module-routes_appointments.html">routes/appointments</a></li><li><a href="module-routes_garages.html">routes/garages</a></li><li><a href="module-routes_services.html">routes/services</a></li><li><a href="module-routes_specificServices.html">routes/specificServices</a></li></ul><h3>Global</h3><ul><li><a href="global.html#adminMiddleware">adminMiddleware</a></li><li><a href="global.html#appt_comment">appt_comment</a></li><li><a href="global.html#appt_date_time">appt_date_time</a></li><li><a href="global.html#appt_id">appt_id</a></li><li><a href="global.html#appt_status">appt_status</a></li><li><a href="global.html#authMiddleware">authMiddleware</a></li><li><a href="global.html#car_id">car_id</a></li><li><a href="global.html#car_marque">car_marque</a></li><li><a href="global.html#car_modele">car_modele</a></li><li><a href="global.html#car_year">car_year</a></li><li><a href="global.html#client_address">client_address</a></li><li><a href="global.html#client_id">client_id</a></li><li><a href="global.html#client_image_name">client_image_name</a></li><li><a href="global.html#client_last_name">client_last_name</a></li><li><a href="global.html#client_name">client_name</a></li><li><a href="global.html#client_phone_number">client_phone_number</a></li><li><a href="global.html#fk_client_id">fk_client_id</a></li><li><a href="global.html#fk_eval_id">fk_eval_id</a></li><li><a href="global.html#fk_garage_id">fk_garage_id</a></li><li><a href="global.html#fk_mail_user">fk_mail_user</a></li><li><a href="global.html#fk_service_id">fk_service_id</a></li><li><a href="global.html#fk_specific_service_id">fk_specific_service_id</a></li><li><a href="global.html#garage_address">garage_address</a></li><li><a href="global.html#garage_city">garage_city</a></li><li><a href="global.html#garage_id">garage_id</a></li><li><a href="global.html#garage_name">garage_name</a></li><li><a href="global.html#garage_phone">garage_phone</a></li><li><a href="global.html#garage_postal_code">garage_postal_code</a></li><li><a href="global.html#initDatabase">initDatabase</a></li><li><a href="global.html#initRoles">initRoles</a></li><li><a href="global.html#role_id">role_id</a></li><li><a href="global.html#role_name">role_name</a></li><li><a href="global.html#service_id">service_id</a></li><li><a href="global.html#service_name">service_name</a></li><li><a href="global.html#specificService_id">specificService_id</a></li><li><a href="global.html#specificService_name">specificService_name</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Wed Oct 09 2024 12:13:19 GMT+0200 (heure d’été d’Europe centrale)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
