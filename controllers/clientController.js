@@ -1,5 +1,6 @@
 // @ts-nocheck
-const { Clients, Users } = require('../Models');
+const { Clients } = require('../Models');
+const { validationResult } = require('express-validator');
 
 /**
  * @module controllers/clientController
@@ -54,6 +55,12 @@ exports.getClient = async (req, res) => {
  * @returns {Object} res - Response object containing the created client or an error message
  */
 exports.createClient = async (req, res) => {
+    // Vérification des erreurs de validation
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     try {
         const userEmail = req.user.mail_user;  
         if (!userEmail) {
@@ -62,11 +69,6 @@ exports.createClient = async (req, res) => {
         }
 
         const { client_image_name, client_name, client_last_name, client_phone_number, client_address } = req.body;
-
-        if (!client_image_name || !client_name || !client_last_name || !client_address) {
-            console.error('Missing required fields'); 
-            return res.status(400).json({ message: 'Missing required fields' });
-        }
 
         const client = await Clients.create({
             client_image_name,
@@ -92,7 +94,13 @@ exports.createClient = async (req, res) => {
  * @param {Object} res - Express response object
  * @returns {Object} res - Response object containing the updated client or an error message
  */
-exports.updateClient = async (req, res) => {    
+exports.updateClient = async (req, res) => {
+    // Vérification des erreurs de validation
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     try {
         const { client_id } = req.params;
         const { client_image_name, client_name, client_last_name, client_phone_number, client_address } = req.body;

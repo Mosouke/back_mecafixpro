@@ -2,6 +2,10 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
+const {
+    validateUserCreation,
+    validateUserLogin,
+} = require('../middleware/validator');
 
 /**
  * @route POST /register
@@ -15,7 +19,7 @@ const authController = require('../controllers/authController');
  * @returns {Object} 500 - Internal server error.
  * @security {}
  */
-router.post('/register', authController.register);
+router.post('/register', validateUserCreation, authController.register);
 
 /**
  * @route POST /login
@@ -28,6 +32,6 @@ router.post('/register', authController.register);
  * @returns {Object} 500 - Internal server error.
  * @security {}
  */
-router.post('/login', authController.login);
+router.post('/login', validateUserLogin, authController.login);
 
 module.exports = router;
