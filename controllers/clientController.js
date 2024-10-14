@@ -55,7 +55,6 @@ exports.getClient = async (req, res) => {
  * @returns {Object} res - Response object containing the created client or an error message
  */
 exports.createClient = async (req, res) => {
-    // Vérification des erreurs de validation
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
@@ -95,7 +94,6 @@ exports.createClient = async (req, res) => {
  * @returns {Object} res - Response object containing the updated client or an error message
  */
 exports.updateClient = async (req, res) => {
-    // Vérification des erreurs de validation
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });

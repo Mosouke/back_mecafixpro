@@ -1,78 +1,109 @@
-const { check } = require('express-validator');
+// @ts-nocheck
+const { check, validationResult } = require('express-validator');
 console.log("Fichier de validation chargé");
 
 /**
  * Validation réutilisable pour les emails.
- * @type {ValidationChain} // Remplacez l'importation dynamique par le type simple
  */
 const validateEmail = check('mail_user').isEmail().withMessage('Email invalide');
 
 /**
  * Validation réutilisable pour les mots de passe.
- * @type {Array<ValidationChain>} // Remplacez l'importation dynamique par le type simple
  */
 const validatePassword = [
     check('password')
-        .isLength({ min: 4 }).withMessage('Le mot de passe doit comporter au moins 4 caractères'),
-    check('password')
-        .isLength({ max: 100 }).withMessage('Le mot de passe doit comporter au plus 100 caractères')
+        .isLength({ min: 4, max: 100 }).withMessage('Le mot de passe doit comporter entre 4 et 100 caractères')
 ];
 
 /**
- * Validations pour la création d'un utilisateur.
- * @type {Array<ValidationChain>} // Remplacez l'importation dynamique par le type simple
+ * Fonction de gestion des erreurs de validation.
  */
-const validateUserCreation = [validateEmail, ...validatePassword];
+const handleValidationErrors = (req, res, next) => {
+    const errors = validationResult(req);
+    console.log("Erreurs de validation:", errors.array());
+    
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    next();
+};
+
+/**
+ * Validations pour la création d'un utilisateur.
+ */
+const validateUserCreation = [
+    validateEmail,
+    ...validatePassword,
+    handleValidationErrors
+];
 
 /**
  * Validations pour la connexion d'un utilisateur.
- * @type {Array<ValidationChain>} // Remplacez l'importation dynamique par le type simple
  */
-const validateUserLogin = [validateEmail, ...validatePassword];
+const validateUserLogin = [
+    validateEmail,
+    ...validatePassword,
+    handleValidationErrors
+];
 
 /**
  * Validations pour la mise à jour d'un utilisateur.
- * @type {Array<ValidationChain>} // Remplacez l'importation dynamique par le type simple
  */
-const validateUserUpdate = [validateEmail, ...validatePassword];
+const validateUserUpdate = [
+    validateEmail,
+    ...validatePassword,
+    handleValidationErrors
+];
 
 /**
  * Validations pour la création d'un client.
- * @type {Array<ValidationChain>} // Remplacez l'importation dynamique par le type simple
  */
 const validateClientCreation = [
     check('client_name')
-        .isLength({ min: 1 }).withMessage('Le nom du client doit comporter au moins 1 caractère'),
-    check('client_name')
-        .isLength({ max: 100 }).withMessage('Le nom du client doit comporter au plus 100 caractères'),
+        .isLength({ min: 1, max: 100 }).withMessage('Le nom du client doit comporter entre 1 et 100 caractères')
+        .bail(),
+    check('client_last_name') // Ajout de la validation du nom de famille
+        .isLength({ min: 1, max: 100 }).withMessage('Le nom de famille doit comporter entre 1 et 100 caractères')
+        .bail(),
     check('client_phone_number')
-        .optional()
-        .isLength({ max: 100 }).withMessage('Le numéro de téléphone doit comporter au plus 100 caractères'),
+    .optional()
+    .matches(/^[0-9]+$/)
+    .withMessage('Le numéro de téléphone doit contenir uniquement des chiffres')
+    .isLength({ min: 10, max: 15 })
+    .withMessage('Le numéro de téléphone doit comporter entre 10 et 15 chiffres'),
+
     check('client_address')
-        .isLength({ min: 1 }).withMessage('L\'adresse du client doit comporter au moins 1 caractère'),
-    check('client_address')
-        .isLength({ max: 255 }).withMessage('L\'adresse du client doit comporter au plus 255 caractères'),
+        .isLength({ min: 1, max: 255 }).withMessage('L\'adresse du client doit comporter entre 1 et 255 caractères')
+        .bail(),
     validateEmail,
-    ...validatePassword
+    ...validatePassword,
+    handleValidationErrors
 ];
 
 /**
  * Validations pour la mise à jour d'un client.
- * @type {Array<ValidationChain>} // Remplacez l'importation dynamique par le type simple
  */
 const validateClientUpdate = [
     check('client_name')
-        .isLength({ min: 1 }).withMessage('Le nom du client doit comporter au moins 1 caractère'),
-    check('client_name')
-        .isLength({ max: 100 }).withMessage('Le nom du client doit comporter au plus 100 caractères'),
+        .optional() // Optionnel
+        .isLength({ min: 1, max: 100 }).withMessage('Le nom du client doit comporter entre 1 et 100 caractères')
+        .bail(),
+    check('client_last_name') // Ajout de la validation du nom de famille
+        .optional() // Optionnel
+        .isLength({ min: 1, max: 100 }).withMessage('Le nom de famille doit comporter entre 1 et 100 caractères'),
     check('client_phone_number')
-        .optional()
-        .isLength({ max: 100 }).withMessage('Le numéro de téléphone doit comporter au plus 100 caractères'),
+    .optional()
+    .matches(/^[0-9]+$/)
+    .withMessage('Le numéro de téléphone doit contenir uniquement des chiffres')
+    .isLength({ min: 10, max: 15 })
+    .withMessage('Le numéro de téléphone doit comporter entre 10 et 15 chiffres'),
+
     check('client_address')
-        .optional()
-        .isLength({ min: 1 }).withMessage('L\'adresse du client doit comporter au moins 1 caractère'),
+        .optional() // Optionnel
+        .isLength({ min: 1, max: 255 }).withMessage('L\'adresse du client doit comporter entre 1 et 255 caractères'),
     validateEmail,
-    ...validatePassword
+    ...validatePassword,
+    handleValidationErrors
 ];
 
 // Exportation des validations

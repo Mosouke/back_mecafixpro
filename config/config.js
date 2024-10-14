@@ -1,16 +1,37 @@
 const Sequelize = require('sequelize');
 require('dotenv').config();
 
-const sequelize = new Sequelize (
-    process.env.DB_NAME,
-    process.env.DB_USER,
-    process.env.DB_PASSWORD,
-    {
-        host: process.env.DB_HOST,
-        dialect: process.env.DB_DIALECT,
-        // logging: console.log,
-        logging: false,
-    }
-)
+// Vérifiez que toutes les variables d'environnement sont définies
+const {
+    DB_NAME,
+    DB_USER,
+    DB_PASSWORD,
+    DB_HOST,
+    DB_DIALECT
+} = process.env;
+
+if (!DB_NAME || !DB_USER || !DB_PASSWORD || !DB_HOST || !DB_DIALECT) {
+    throw new Error('Une ou plusieurs variables d\'environnement de base de données sont manquantes.');
+}
+
+const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
+    host: DB_HOST,
+    dialect: DB_DIALECT,
+    logging: false,  // Désactivez le logging des requêtes SQL
+    dialectOptions: {
+       
+        charset: 'utf8mb4',  
+        collate: 'utf8mb4_unicode_ci'  
+    },
+});
+
+// Test de connexion pour vérifier que tout fonctionne
+sequelize.authenticate()
+    .then(() => {
+        console.log('Connexion à la base de données réussie.');
+    })
+    .catch(err => {
+        console.error('Erreur de connexion à la base de données:', err);
+    });
 
 module.exports = sequelize;

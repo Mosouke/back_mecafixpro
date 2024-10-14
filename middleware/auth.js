@@ -52,13 +52,12 @@ const authMiddleware = async (req, res, next) => {
                     success: false,
                     message: 'Token expiré'
                 });
-            } else if (err instanceof jwt.JsonWebTokenError) {
+            } else {
                 return res.status(401).json({
                     success: false,
                     message: 'Token invalide'
                 });
             }
-            throw err;
         }
 
     } catch (err) {
@@ -84,6 +83,7 @@ const adminMiddleware = async (req, res, next) => {
         return res.status(403).json({ message: 'Accès refusé, utilisateur non authentifié.' });
     }
 
+    // Vérification si l'utilisateur a le rôle d'admin
     if (req.user.role.role_name === 'admin') {
         return next();
     }
