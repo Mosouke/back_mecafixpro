@@ -75,7 +75,7 @@ describe('Client Creation Validation', () => {
                 client_address: '123 Example St',
                 client_phone_number: '1234567890',
                 client_image_name: 'image.png',
-                fk_mail_user: 'test@example.com',
+                mail_user: 'valid@example.com', 
             });
 
         expect(response.status).toBe(400);
@@ -93,7 +93,7 @@ describe('Client Creation Validation', () => {
                 client_address: '123 Example St',
                 client_phone_number: '1234567890',
                 client_image_name: 'image.png',
-                fk_mail_user: 'test@example.com',
+                mail_user: 'valid@example.com', 
             });
 
         expect(response.status).toBe(400);
@@ -111,7 +111,7 @@ describe('Client Creation Validation', () => {
                 client_address: '',
                 client_phone_number: '1234567890',
                 client_image_name: 'image.png',
-                fk_mail_user: 'test@example.com',
+                mail_user: 'valid@example.com', 
             });
 
         expect(response.status).toBe(400);
@@ -129,7 +129,7 @@ describe('Client Creation Validation', () => {
                 client_address: '123 Example St',
                 client_phone_number: 'invalid-phone',
                 client_image_name: 'image.png',
-                fk_mail_user: 'test@example.com',
+                mail_user: 'valid@example.com',
             });
     
         expect(response.status).toBe(400);
@@ -137,7 +137,6 @@ describe('Client Creation Validation', () => {
             expect.objectContaining({ msg: 'Le numéro de téléphone doit contenir uniquement des chiffres', path: 'client_phone_number' })
         );
     });
-    
 
     it('should succeed with valid client data', async () => {
         const response = await request(app)
@@ -146,11 +145,11 @@ describe('Client Creation Validation', () => {
                 client_image_name: 'image.png',
                 client_name: 'Client Example',
                 client_last_name: 'Doe',
-                client_phone_number: '1234567890',
+                client_phone_number: '0123456789',
                 client_address: '123 Example St',
-                fk_mail_user: 'test@example.com',
+                mail_user: 'valid@example.com' 
             });
-
+    
         expect(response.status).toBe(201);
         expect(response.body.message).toBe('Client ajouté avec succès');
     });

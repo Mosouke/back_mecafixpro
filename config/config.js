@@ -1,7 +1,6 @@
 const Sequelize = require('sequelize');
 require('dotenv').config();
 
-// Vérifiez que toutes les variables d'environnement sont définies
 const {
     DB_NAME,
     DB_USER,
@@ -21,11 +20,11 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
     dialectOptions: {
        
         charset: 'utf8mb4',  
-        collate: 'utf8mb4_unicode_ci'  
+        // collate: 'utf8mb4_unicode_ci'  
     },
 });
 
-// Test de connexion pour vérifier que tout fonctionne
+
 sequelize.authenticate()
     .then(() => {
         console.log('Connexion à la base de données réussie.');

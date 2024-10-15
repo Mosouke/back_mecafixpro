@@ -5,15 +5,16 @@ console.log("Fichier de validation chargé");
 /**
  * Validation réutilisable pour les emails.
  */
-const validateEmail = check('mail_user').isEmail().withMessage('Email invalide');
+const validateEmail = check('mail_user')
+    .isEmail()
+    .withMessage('Email invalide');
 
 /**
  * Validation réutilisable pour les mots de passe.
  */
-const validatePassword = [
-    check('password')
-        .isLength({ min: 4, max: 100 }).withMessage('Le mot de passe doit comporter entre 4 et 100 caractères')
-];
+const validatePassword = check('password')
+    .isLength({ min: 4, max: 100 })
+    .withMessage('Le mot de passe doit comporter entre 4 et 100 caractères');
 
 /**
  * Fonction de gestion des erreurs de validation.
@@ -33,7 +34,7 @@ const handleValidationErrors = (req, res, next) => {
  */
 const validateUserCreation = [
     validateEmail,
-    ...validatePassword,
+    validatePassword,
     handleValidationErrors
 ];
 
@@ -42,7 +43,7 @@ const validateUserCreation = [
  */
 const validateUserLogin = [
     validateEmail,
-    ...validatePassword,
+    validatePassword,
     handleValidationErrors
 ];
 
@@ -51,7 +52,7 @@ const validateUserLogin = [
  */
 const validateUserUpdate = [
     validateEmail,
-    ...validatePassword,
+    validatePassword,
     handleValidationErrors
 ];
 
@@ -60,23 +61,25 @@ const validateUserUpdate = [
  */
 const validateClientCreation = [
     check('client_name')
-        .isLength({ min: 1, max: 100 }).withMessage('Le nom du client doit comporter entre 1 et 100 caractères')
-        .bail(),
-    check('client_last_name') // Ajout de la validation du nom de famille
-        .isLength({ min: 1, max: 100 }).withMessage('Le nom de famille doit comporter entre 1 et 100 caractères')
-        .bail(),
+        .isLength({ min: 1, max: 100 })
+        .withMessage('Le nom du client doit comporter entre 1 et 100 caractères'),
+        
+    check('client_last_name') 
+        .isLength({ min: 1, max: 100 })
+        .withMessage('Le nom de famille doit comporter entre 1 et 100 caractères'),
+
     check('client_phone_number')
-    .optional()
-    .matches(/^[0-9]+$/)
-    .withMessage('Le numéro de téléphone doit contenir uniquement des chiffres')
-    .isLength({ min: 10, max: 15 })
-    .withMessage('Le numéro de téléphone doit comporter entre 10 et 15 chiffres'),
+        .optional()
+        .matches(/^[0-9]+$/)
+        .withMessage('Le numéro de téléphone doit contenir uniquement des chiffres')
+        .isLength({ min: 10, max: 15 })
+        .withMessage('Le numéro de téléphone doit comporter entre 10 et 15 chiffres'),
 
     check('client_address')
-        .isLength({ min: 1, max: 255 }).withMessage('L\'adresse du client doit comporter entre 1 et 255 caractères')
-        .bail(),
+        .isLength({ min: 1, max: 255 })
+        .withMessage('L\'adresse du client doit comporter entre 1 et 255 caractères'),
+        
     validateEmail,
-    ...validatePassword,
     handleValidationErrors
 ];
 
@@ -84,25 +87,34 @@ const validateClientCreation = [
  * Validations pour la mise à jour d'un client.
  */
 const validateClientUpdate = [
+    check('client_image_name')
+        .optional()
+        .isLength({ min: 1, max: 255 })
+        .withMessage('Le nom de fichier de l\'image doit comporter entre 1 et 255 caractères'),
+
     check('client_name')
-        .optional() // Optionnel
-        .isLength({ min: 1, max: 100 }).withMessage('Le nom du client doit comporter entre 1 et 100 caractères')
-        .bail(),
-    check('client_last_name') // Ajout de la validation du nom de famille
-        .optional() // Optionnel
-        .isLength({ min: 1, max: 100 }).withMessage('Le nom de famille doit comporter entre 1 et 100 caractères'),
+        .optional() 
+        .isLength({ min: 1, max: 100 })
+        .withMessage('Le nom du client doit comporter entre 1 et 100 caractères'),
+
+    check('client_last_name') 
+        .optional() 
+        .isLength({ min: 1, max: 100 })
+        .withMessage('Le nom de famille doit comporter entre 1 et 100 caractères'),
+
     check('client_phone_number')
-    .optional()
-    .matches(/^[0-9]+$/)
-    .withMessage('Le numéro de téléphone doit contenir uniquement des chiffres')
-    .isLength({ min: 10, max: 15 })
-    .withMessage('Le numéro de téléphone doit comporter entre 10 et 15 chiffres'),
+        .optional()
+        .matches(/^[0-9]+$/)
+        .withMessage('Le numéro de téléphone doit contenir uniquement des chiffres')
+        .isLength({ min: 10, max: 15 })
+        .withMessage('Le numéro de téléphone doit comporter entre 10 et 15 chiffres'),
 
     check('client_address')
-        .optional() // Optionnel
-        .isLength({ min: 1, max: 255 }).withMessage('L\'adresse du client doit comporter entre 1 et 255 caractères'),
+        .optional()
+        .isLength({ min: 1, max: 255 })
+        .withMessage('L\'adresse du client doit comporter entre 1 et 255 caractères'),
+        
     validateEmail,
-    ...validatePassword,
     handleValidationErrors
 ];
 
