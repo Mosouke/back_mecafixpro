@@ -24,17 +24,22 @@ const Users = sequelize.define('users', {
         allowNull: false,
         unique: true,
         validate: {
-            isEmail: true,
+            isEmail: true,  // Validation pour s'assurer que le champ est un email valide
         },
     },
     password: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false,  // Le mot de passe ne peut pas être null
     },
     fk_role_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
-    },
+        allowNull: false,  // La clé étrangère ne peut pas être null
+        defaultValue: 1,   // Valeur par défaut définie sur 1
+        references: {
+            model: 'roles',  // Table 'roles' référencée
+            key: 'id',       // Clé primaire de la table 'roles'
+        },
+    }
 });
 
 /**
@@ -47,7 +52,7 @@ const Users = sequelize.define('users', {
  * @returns {Promise<boolean>} - A promise that resolves to true if passwords match, false otherwise.
  */
 Users.prototype.comparePassword = async function(password) {
-    return await bcrypt.compare(password, this.password);
+    return await bcrypt.compare(password, this.password);  // Compare le mot de passe avec le hash enregistré
 };
 
 module.exports = Users;

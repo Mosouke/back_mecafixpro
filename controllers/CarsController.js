@@ -55,10 +55,10 @@ exports.getCar = async (req, res) => {
  */
 exports.createCar = async (req, res) => {
     try {
-        const { car_marque, car_modele, car_year } = req.body;
+        const { car_marque, car_modele, car_year, car_license_plate } = req.body;
         const { client_id } = req.params; 
         
-        if (!car_marque || !car_modele || !car_year || !client_id) {
+        if (!car_marque || !car_modele || !car_year || !car_license_plate || !client_id) {
             console.error('Missing required fields');
             return res.status(400).json({ message: 'Missing required fields' });
         }
@@ -72,6 +72,7 @@ exports.createCar = async (req, res) => {
             car_marque,
             car_modele,
             car_year,
+            car_license_plate,
             fk_client_id: client.client_id 
         });
 
@@ -93,7 +94,7 @@ exports.createCar = async (req, res) => {
 exports.updateCar = async (req, res) => {
     try {
         const { car_id, client_id } = req.params;  
-        const { car_marque, car_modele, car_year } = req.body;
+        const { car_marque, car_modele, car_year, car_license_plate } = req.body;
 
         const client = await Clients.findOne({ where: { client_id } });
         if (!client) {
@@ -101,7 +102,7 @@ exports.updateCar = async (req, res) => {
         }
 
         const [updated] = await Cars.update(
-            { car_marque, car_modele, car_year, fk_client_id: client_id }, 
+            { car_marque, car_modele, car_year,car_license_plate, fk_client_id: client_id }, 
             { where: { car_id } }
         );
 

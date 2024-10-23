@@ -1,12 +1,13 @@
 // @ts-nocheck
 const express = require('express');
-const authRoutes = require('./routes/authRoutes');
+const authRoutes = require('./routes/authRoutes'); 
 const clientRoutes = require('./routes/clientRoutes');
 const carRoutes = require('./routes/carRoutes');
 const garageRoutes = require('./routes/garageRoutes');
 const serviceRoutes = require('./routes/serviceRoutes');
 const specificServiceRoutes = require('./routes/specificServicesRoutes');
 const appointmentRoutes = require('./routes/appointmentRoutes');
+const cors = require('cors');
 const { sequelize, Roles } = require('./Models');
 
 const app = express();
@@ -15,11 +16,16 @@ const app = express();
  * Middleware to parse JSON requests.
  */
 app.use(express.json());
+app.use(cors({
+    origin: 'http://localhost:5173', 
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', 
+    credentials: true 
+}));
 
 /**
  * Route definitions.
  */
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', authRoutes); 
 app.use('/api/client', clientRoutes);
 app.use('/api/car', carRoutes);
 app.use('/api/garage', garageRoutes);

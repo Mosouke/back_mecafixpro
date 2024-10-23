@@ -58,6 +58,18 @@ const Cars = sequelize.define('cars', {
             max: new Date().getFullYear(),
         },
     },
+
+    /**
+     * La plaque d'immatriculation du véhicule.
+     * 
+     * @type {string}
+     */
+    car_license_plate: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+    },
+
     /**
      * Foreign key linking to the client that owns the car (relationship to 'Clients' table).
      * 

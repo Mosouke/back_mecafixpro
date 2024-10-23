@@ -1,4 +1,3 @@
-// @ts-nocheck
 const bcrypt = require('bcrypt'); 
 const jwt = require('jsonwebtoken'); 
 const { Users } = require('../Models');
@@ -61,5 +60,34 @@ exports.login = async (req, res) => {
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: error.message });
+    }
+};
+
+/**
+ * Vérifier un token JWT
+ * @param {Object} req - Objet de requête
+ * @param {Object} res - Objet de réponse
+ */
+exports.verifyToken = async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1]; 
+
+    if (!token) {
+        return res.status(401).json({ message: 'No token provided' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        const user = await Users.findByPk(decoded.id);
+
+        if (!user) {
+            return res.status(401).json({ message: 'Invalid token' });
+        }
+
+        return res.status(200).json({ message: 'Token is valid', user });
+    } catch (error) {
+        if (error.name === 'TokenExpiredError') {
+            return res.status(401).json({ message: 'Token expired' });
+        }
+        return res.status(401).json({ message: 'Invalid token' });
     }
 };

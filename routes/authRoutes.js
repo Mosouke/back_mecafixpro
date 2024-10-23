@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
+const { authMiddleware } = require('../middleware/auth');
 const {
     validateUserCreation,
     validateUserLogin,
@@ -33,5 +34,13 @@ router.post('/register', validateUserCreation, authController.register);
  * @security {}
  */
 router.post('/login', validateUserLogin, authController.login);
+
+/**
+ * @route GET /verify-token
+ * @group Authentication - Operations about authentication
+ * @returns {Object} 200 - Token valid.
+ * @returns {Object} 401 - Invalid or missing token.
+ */
+router.get('/verify-token', authController.verifyToken);
 
 module.exports = router;
