@@ -13,6 +13,7 @@ const { validationResult } = require('express-validator');
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @returns {Object} res - Response object containing all clients or an error message
+ * @throws {Error} 500 - Internal server error if unable to fetch clients
  */
 exports.getClients = async (req, res) => {
     try {
@@ -31,6 +32,8 @@ exports.getClients = async (req, res) => {
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @returns {Object} res - Response object containing the client or an error message
+ * @throws {Error} 404 - Client not found if the specified ID does not exist
+ * @throws {Error} 500 - Internal server error if unable to fetch the client
  */
 exports.getClient = async (req, res) => {
     try {
@@ -53,6 +56,9 @@ exports.getClient = async (req, res) => {
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @returns {Object} res - Response object containing the created client or an error message
+ * @throws {Error} 400 - Bad request if validation fails
+ * @throws {Error} 401 - Unauthorized if the user is not authenticated
+ * @throws {Error} 500 - Internal server error if unable to create the client
  */
 exports.createClient = async (req, res) => {
     const errors = validationResult(req);
@@ -92,6 +98,9 @@ exports.createClient = async (req, res) => {
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @returns {Object} res - Response object containing the updated client or an error message
+ * @throws {Error} 400 - Bad request if validation fails
+ * @throws {Error} 404 - Client not found if the specified ID does not exist
+ * @throws {Error} 500 - Internal server error if unable to update the client
  */
 exports.updateClient = async (req, res) => {
     const errors = validationResult(req);

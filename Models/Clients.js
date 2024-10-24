@@ -1,6 +1,7 @@
 // @ts-nocheck
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/config');
+const Users = require('./Users'); // Import du modèle Users
 
 /**
  * Sequelize model representing the 'Clients' table.
@@ -13,7 +14,6 @@ const sequelize = require('../config/config');
  * @property {string} client_last_name - The last name of the client.
  * @property {string} [client_phone_number] - The phone number of the client (optional).
  * @property {string} client_address - The address of the client.
- * @property {string} fk_mail_user - The foreign key linking to the user email (relationship to 'Users' table).
  */
 const Clients = sequelize.define('clients', {
     /**
@@ -24,7 +24,7 @@ const Clients = sequelize.define('clients', {
     client_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        autoIncrement: true,  
+        autoIncrement: true,
         primaryKey: true,
     },
     /**
@@ -57,11 +57,11 @@ const Clients = sequelize.define('clients', {
     /**
      * The phone number of the client (optional).
      * 
-     * @type {string|undefined}
+     * @type {string|null}
      */
     client_phone_number: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: true,  
     },
     /**
      * The address of the client.
@@ -72,15 +72,15 @@ const Clients = sequelize.define('clients', {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    /**
-     * Foreign key linking to the email in the 'Users' table.
-     * 
-     * @type {string}
-     */
-    fk_mail_user: {
-        type: DataTypes.STRING,
-        allowNull: false, 
+});
+
+// Define relationship: A client belongs to a user (One-to-Many relationship)
+Clients.belongsTo(Users, {
+    foreignKey: {
+        allowNull: false,  
     },
+    as: 'user',  
+    onDelete: 'CASCADE', 
 });
 
 module.exports = Clients;

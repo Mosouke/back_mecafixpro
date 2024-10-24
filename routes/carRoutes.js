@@ -43,7 +43,7 @@ router.post('/add/:client_id', carController.createCar);
  * @route PUT /cars/update/{car_id}/{client_id}
  * @group Cars - Operations about cars
  * @param {number} car_id.path.required - ID of the car to update.
- * @param {number} client_id.path.required - ID of the client updating the car.
+ * @param {number} client_id.path.arequired - ID of the client updating the car.
  * @param {Object} req - The request object containing updated car data.
  * @param {string} req.body.car_marque - Brand of the car (optional).
  * @param {string} req.body.car_modele - Model of the car (optional).

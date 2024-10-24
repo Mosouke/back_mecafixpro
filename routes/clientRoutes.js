@@ -4,58 +4,59 @@ const router = express.Router();
 const clientController = require('../controllers/clientController');
 const { authMiddleware } = require('../middleware/auth');
 const { validateClientCreation, validateClientUpdate } = require('../middleware/validator');
+const upload = require('../middleware/multer');
 
 /**
  * @route GET /clients
- * @group Clients - Operations about clients
- * @returns {Array.<Object>} 200 - An array of client objects.
- * @returns {Object} 500 - Internal server error.
+ * @group Clients - Opérations concernant les clients
+ * @returns {Array.<Object>} 200 - Un tableau d'objets client.
+ * @returns {Object} 500 - Erreur interne du serveur.
  */
 router.get('/', authMiddleware, clientController.getClients);
 
 /**
  * @route GET /clients/{client_id}
- * @group Clients - Operations about clients
- * @param {number} client_id.path.required - ID of the client to fetch.
- * @returns {Object} 200 - Client object.
- * @returns {Object} 404 - Client not found.
- * @returns {Object} 500 - Internal server error.
+ * @group Clients - Opérations concernant les clients
+ * @param {number} client_id.path.required - ID du client à récupérer.
+ * @returns {Object} 200 - Objet client.
+ * @returns {Object} 404 - Client non trouvé.
+ * @returns {Object} 500 - Erreur interne du serveur.
  * @security {}
  */
 router.get('/:client_id', authMiddleware, clientController.getClient);
 
 /**
  * @route POST /clients/add
- * @group Clients - Operations about clients
- * @param {Object} req - The request object containing client data.
- * @param {string} req.body.client_image_name - Name of the client's image.
- * @param {string} req.body.client_name - Name of the client.
- * @param {string} req.body.client_last_name - Last name of the client.
- * @param {string} req.body.client_phone_number - Phone number of the client.
- * @param {string} req.body.client_address - Address of the client.
- * @returns {Object} 201 - Client successfully created.
- * @returns {Object} 400 - Bad request if validation fails.
- * @returns {Object} 500 - Internal server error.
+ * @group Clients - Opérations concernant les clients
+ * @param {Object} req - L'objet de requête contenant les données du client.
+ * @param {string} req.body.client_image_name - Nom de l'image du client.
+ * @param {string} req.body.client_name - Nom du client.
+ * @param {string} req.body.client_last_name - Nom de famille du client.
+ * @param {string} req.body.client_phone_number - Numéro de téléphone du client.
+ * @param {string} req.body.client_address - Adresse du client.
+ * @returns {Object} 201 - Client créé avec succès.
+ * @returns {Object} 400 - Mauvaise requête si la validation échoue.
+ * @returns {Object} 500 - Erreur interne du serveur.
  * @security {}
  */
-router.post('/add', authMiddleware, validateClientCreation, clientController.createClient);
+router.post('/add', authMiddleware, upload.single('client_image'), validateClientCreation, clientController.createClient);
 
 /**
  * @route PUT /clients/update/{client_id}
- * @group Clients - Operations about clients
- * @param {number} client_id.path.required - ID of the client to update.
- * @param {Object} req - The request object containing updated client data.
- * @param {string} req.body.client_image_name - Name of the client's image (optional).
- * @param {string} req.body.client_name - Name of the client (optional).
- * @param {string} req.body.client_last_name - Last name of the client (optional).
- * @param {string} req.body.client_phone_number - Phone number of the client (optional).
- * @param {string} req.body.client_address - Address of the client (optional).
- * @returns {Object} 200 - Client successfully updated.
- * @returns {Object} 404 - Client not found.
- * @returns {Object} 400 - Bad request if validation fails.
- * @returns {Object} 500 - Internal server error.
+ * @group Clients - Opérations concernant les clients
+ * @param {number} client_id.path.required - ID du client à mettre à jour.
+ * @param {Object} req - L'objet de requête contenant les données mises à jour du client.
+ * @param {string} req.body.client_image_name - Nom de l'image du client (optionnel).
+ * @param {string} req.body.client_name - Nom du client (optionnel).
+ * @param {string} req.body.client_last_name - Nom de famille du client (optionnel).
+ * @param {string} req.body.client_phone_number - Numéro de téléphone du client (optionnel).
+ * @param {string} req.body.client_address - Adresse du client (optionnel).
+ * @returns {Object} 200 - Client mis à jour avec succès.
+ * @returns {Object} 404 - Client non trouvé.
+ * @returns {Object} 400 - Mauvaise requête si la validation échoue.
+ * @returns {Object} 500 - Erreur interne du serveur.
  * @security {}
  */
-router.put('/update/:client_id', authMiddleware, validateClientUpdate, clientController.updateClient);
+router.put('/update/:client_id', authMiddleware, upload.single('client_image'), validateClientUpdate, clientController.updateClient);
 
 module.exports = router;
