@@ -76,7 +76,7 @@ const Cars = sequelize.define('cars', {
      * @type {number}
      */
     fk_client_id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         allowNull: false,
     },
 });

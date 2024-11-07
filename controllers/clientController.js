@@ -37,7 +37,8 @@ exports.getClients = async (req, res) => {
  */
 exports.getClient = async (req, res) => {
     try {
-        const { client_id } = req.params;
+        // Recuperation de l'id depuis le token (à partir de la requête) envoyé par le middleware auth
+        const { client_id } = req.user;
         const client = await Clients.findOne({ where: { client_id } });
         if (!client) {
             return res.status(404).json({ message: 'Client not found' });

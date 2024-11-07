@@ -1,23 +1,18 @@
+// @ts-nocheck
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
-const { Users, Roles } = require('../Models'); // Assurez-vous que le chemin est correct
+const { Users, Roles } = require('../Models');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
 if (!JWT_SECRET) {
-    /* istanbul ignore next */
     throw new Error('JWT_SECRET must be defined in environment variables');
 }
 
 /**
- * Middleware for authenticating users based on JWT token.
- * 
- * @async
- * @function authMiddleware
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
- * @param {Function} next - The next middleware function.
- * @returns {Promise<void>} - Calls next middleware or responds with an error.
+ * Middleware pour authentifier les utilisateurs basé sur le token JWT.
+ * @param {import('express').Request} req - L'objet requête.
+ * @param {import('express').Response} res - L'objet réponse.
+ * @param {import('express').NextFunction} next - La fonction suivante dans la chaîne de middleware.
  */
 const authMiddleware = async (req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -33,8 +28,9 @@ const authMiddleware = async (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
-        const user = await Users.findByPk(decoded.userId, {
+        const user = await Users.findByPk(decoded.id, {
             include: [{ model: Roles, as: 'role' }],
+            attributes: ['id', 'mail_user'],
         });
 
         if (!user) {
@@ -44,8 +40,8 @@ const authMiddleware = async (req, res, next) => {
             });
         }
 
-        req.user = user; 
-        next(); 
+        req.user = user;
+        next();
     } catch (err) {
         if (err.name === 'TokenExpiredError') {
             return res.status(401).json({
@@ -68,17 +64,12 @@ const authMiddleware = async (req, res, next) => {
 };
 
 /**
- * Middleware to check if the authenticated user has admin privileges.
- * 
- * @async
- * @function adminMiddleware
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
- * @param {Function} next - The next middleware function.
- * @returns {Promise<void>} - Calls next middleware or responds with an error.
+ * Middleware pour vérifier si l'utilisateur authentifié a des privilèges d'administrateur.
+ * @param {import('express').Request} req - L'objet requête.
+ * @param {import('express').Response} res - L'objet réponse.
+ * @param {import('express').NextFunction} next - La fonction suivante dans la chaîne de middleware.
  */
 const adminMiddleware = async (req, res, next) => {
-    // Vérifie si l'utilisateur est authentifié et a un rôle
     if (!req.user || !req.user.role) {
         return res.status(403).json({
             success: false,
@@ -86,14 +77,13 @@ const adminMiddleware = async (req, res, next) => {
         });
     }
 
-    // Vérifie si l'utilisateur a un rôle d'admin
     if (req.user.role.role_name === 'admin') {
-        return next(); // Passe au middleware suivant
+        return next();
     }
 
     return res.status(403).json({
         success: false,
-        message: 'Accès refusé, utilisateur non autorisé.',
+        message: 'Accès refusé, privilèges insuffisants.',
     });
 };
 

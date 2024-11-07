@@ -16,70 +16,51 @@ const Users = require('./Users'); // Import du modèle Users
  * @property {string} client_address - The address of the client.
  */
 const Clients = sequelize.define('clients', {
-    /**
-     * The unique identifier for each client.
-     * 
-     * @type {number}
-     */
     client_id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
     },
-    /**
-     * The name of the client's profile image.
-     * 
-     * @type {string}
-     */
     client_image_name: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    /**
-     * The first name of the client.
-     * 
-     * @type {string}
-     */
     client_name: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    /**
-     * The last name of the client.
-     * 
-     * @type {string}
-     */
     client_last_name: {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    /**
-     * The phone number of the client (optional).
-     * 
-     * @type {string|null}
-     */
     client_phone_number: {
         type: DataTypes.STRING,
-        allowNull: true,  
+        allowNull: true,
     },
-    /**
-     * The address of the client.
-     * 
-     * @type {string}
-     */
     client_address: {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    userId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        unique: true, // Ajout de la contrainte unique pour garantir One-to-One
+        references: {
+            model: 'users',
+            key: 'id_user',
+        }
+    }
 });
+
 
 // Define relationship: A client belongs to a user (One-to-Many relationship)
 Clients.belongsTo(Users, {
     foreignKey: {
         allowNull: false,  
     },
-    as: 'user',  
+    as: 'user', 
+    key: 'id_user', 
     onDelete: 'CASCADE', 
 });
 

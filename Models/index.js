@@ -19,6 +19,8 @@ const sequelize = require('../config/config');
  * - Garages have many Services.
  * - SpecificServices belong to a Service.
  * - Services have many SpecificServices.
+ * - Users have one Client.
+ * - Clients belong to one User.
  */
 
 // Users belong to Roles
@@ -36,6 +38,10 @@ Garages.hasMany(Services, { foreignKey: 'fk_garage_id', targetKey: 'garage_id' }
 // SpecificServices belong to Services
 SpecificServices.belongsTo(Services, { foreignKey: 'fk_service_id', targetKey: 'service_id' });
 Services.hasMany(SpecificServices, { foreignKey: 'fk_service_id', targetKey: 'service_id' });
+
+// Users have one Client, Clients belong to one User
+Users.hasOne(Clients, { foreignKey: 'userId' });
+Clients.belongsTo(Users, { foreignKey: 'userId' });
 
 /**
  * Initializes predefined roles in the database.

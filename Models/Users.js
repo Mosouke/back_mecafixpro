@@ -19,28 +19,39 @@ const bcrypt = require('bcryptjs');
  * @property {number} fk_role_id - Foreign key referencing the role of the user.
  */
 const Users = sequelize.define('users', {
+    id_user: {  
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+    },
     mail_user: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
         validate: {
-            isEmail: true,  // Validation pour s'assurer que le champ est un email valide
+            isEmail: true,
         },
     },
     password: {
         type: DataTypes.STRING,
-        allowNull: false,  // Le mot de passe ne peut pas être null
+        allowNull: false,
     },
     fk_role_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,  // La clé étrangère ne peut pas être null
-        defaultValue: 1,   // Valeur par défaut définie sur 1
+        allowNull: false,
+        defaultValue: 1,
         references: {
-            model: 'roles',  // Table 'roles' référencée
-            key: 'id',       // Clé primaire de la table 'roles'
+            model: 'roles',
+            key: 'role_id',
         },
+    },
+    client_id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        allowNull: true, 
     }
 });
+
 
 /**
  * Compares a plain text password with the user's hashed password.
@@ -52,7 +63,7 @@ const Users = sequelize.define('users', {
  * @returns {Promise<boolean>} - A promise that resolves to true if passwords match, false otherwise.
  */
 Users.prototype.comparePassword = async function(password) {
-    return await bcrypt.compare(password, this.password);  // Compare le mot de passe avec le hash enregistré
+    return await bcrypt.compare(password, this.password); 
 };
 
 module.exports = Users;

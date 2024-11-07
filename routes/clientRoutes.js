@@ -23,7 +23,7 @@ router.get('/', authMiddleware, clientController.getClients);
  * @returns {Object} 500 - Erreur interne du serveur.
  * @security {}
  */
-router.get('/:client_id', authMiddleware, clientController.getClient);
+router.get('/profile', authMiddleware, clientController.getClient);
 
 /**
  * @route POST /clients/add

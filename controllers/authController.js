@@ -1,14 +1,20 @@
-const bcrypt = require('bcrypt'); 
-const jwt = require('jsonwebtoken'); 
+// @ts-nocheck
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const { Users } = require('../Models');
 const { validationResult } = require('express-validator');
 
-const JWT_SECRET = process.env.JWT_SECRET; 
+const JWT_SECRET = process.env.JWT_SECRET;
+const TOKEN_EXPIRATION = '1d'; 
+
+if (!JWT_SECRET) {
+    throw new Error('JWT_SECRET must be defined in environment variables');
+}
 
 /**
- * Enregistrer un nouvel utilisateur
- * @param {Object} req - Objet de requête
- * @param {Object} res - Objet de réponse
+ * Enregistrer un nouvel utilisateur dans la base de données.
+ * @param {import('express').Request} req - Objet de requête Express.
+ * @param {import('express').Response} res - Objet de réponse Express.
  */
 exports.register = async (req, res) => {
     const { mail_user, password } = req.body;
@@ -19,21 +25,26 @@ exports.register = async (req, res) => {
     }
 
     try {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await Users.create({ mail_user, password: hashedPassword });
-        const token = jwt.sign({ id: user.id, mail_user: user.mail_user }, JWT_SECRET, { expiresIn: '60d' }); 
+        const userExists = await Users.findOne({ where: { mail_user } });
+        if (userExists) {
+            return res.status(400).json({ error: 'Cet email est déjà utilisé.' });
+        }
 
-        return res.status(201).json({ token }); 
+        const hashedPassword = await bcrypt.hash(password, 12);
+        const user = await Users.create({ mail_user, password: hashedPassword });
+        const token = jwt.sign({ id: user.id_user, mail_user: user.mail_user }, JWT_SECRET, { expiresIn: TOKEN_EXPIRATION });
+
+        return res.status(201).json({ token });
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: error.message });
+        console.error('Erreur lors de l\'enregistrement:', error);
+        return res.status(500).json({ error: 'Une erreur est survenue lors de l\'enregistrement.' });
     }
 };
 
 /**
- * Connecter un utilisateur existant
- * @param {Object} req - Objet de requête
- * @param {Object} res - Objet de réponse
+ * Connecter un utilisateur existant.
+ * @param {import('express').Request} req - Objet de requête Express.
+ * @param {import('express').Response} res - Objet de réponse Express.
  */
 exports.login = async (req, res) => {
     const { mail_user, password } = req.body;
@@ -46,48 +57,53 @@ exports.login = async (req, res) => {
     try {
         const user = await Users.findOne({ where: { mail_user } });
         if (!user) {
-            return res.status(401).json({ message: 'Invalid credentials' });
+            return res.status(401).json({ message: 'Identifiants invalides' });
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
-            return res.status(401).json({ message: 'Invalid credentials' });
+            return res.status(401).json({ message: 'Identifiants invalides' });
         }
 
-        const token = jwt.sign({ id: user.id, mail_user: user.mail_user }, JWT_SECRET, { expiresIn: '60d' }); 
+        const token = jwt.sign(
+            { id: user.id_user, mail_user: user.mail_user },
+            JWT_SECRET,
+            { expiresIn: TOKEN_EXPIRATION }
+        );
 
-        return res.status(200).json({ token }); 
+        return res.status(200).json({ token });
+
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: error.message });
+        console.error('Erreur lors de la connexion:', error);
+        return res.status(500).json({ error: 'Une erreur est survenue lors de la connexion.' });
     }
 };
 
 /**
- * Vérifier un token JWT
- * @param {Object} req - Objet de requête
- * @param {Object} res - Objet de réponse
+ * Obtenir l'email de l'utilisateur authentifié.
+ * @param {import('express').Request} req - Objet de requête Express.
+ * @param {import('express').Response} res - Objet de réponse Express.
  */
-exports.verifyToken = async (req, res) => {
-    const token = req.headers.authorization?.split(' ')[1]; 
-
-    if (!token) {
-        return res.status(401).json({ message: 'No token provided' });
-    }
-
+exports.userMail = async (req, res) => {
     try {
-        const decoded = jwt.verify(token, JWT_SECRET);
-        const user = await Users.findByPk(decoded.id);
+        const user = await Users.findByPk(req.user.id, { attributes: ['mail_user'] });
 
         if (!user) {
-            return res.status(401).json({ message: 'Invalid token' });
+            return res.status(404).json({ message: 'Utilisateur non trouvé' });
         }
 
-        return res.status(200).json({ message: 'Token is valid', user });
+        return res.status(200).json({ email: user.mail_user });
     } catch (error) {
-        if (error.name === 'TokenExpiredError') {
-            return res.status(401).json({ message: 'Token expired' });
-        }
-        return res.status(401).json({ message: 'Invalid token' });
+        console.error('Erreur lors de la récupération de l\'email:', error);
+        return res.status(500).json({ error: 'Une erreur interne est survenue' });
     }
+};
+
+/**
+ * Vérifier la validité d'un token JWT.
+ * @param {import('express').Request} req - Objet de requête Express.
+ * @param {import('express').Response} res - Objet de réponse Express.
+ */
+exports.verifyToken = async (req, res) => {
+    return res.status(200).json({ message: 'Token valide', user: { id: req.user.id, mail_user: req.user.mail_user } });
 };
