@@ -17,7 +17,7 @@ const app = express();
  */
 app.use(express.json());
 app.use(cors({
-    origin: 'https://front-react-mecafixpro.vercel.app/', 
+    origin: 'https://front-react-mecafixpro.vercel.app', 
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', 
     credentials: true 
 }));
