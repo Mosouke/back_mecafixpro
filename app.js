@@ -9,13 +9,15 @@ const specificServiceRoutes = require('./routes/specificServicesRoutes');
 const appointmentRoutes = require('./routes/appointmentRoutes');
 const cors = require('cors');
 const { sequelize, Roles } = require('./Models');
+const { body } = require('express-validator');
+const bodyParser = require('body-parser');
 
 const app = express();
 
 /**
  * Middleware to parse JSON requests.
  */
-app.use(express.json());
+app.use(bodyParser.json());
 app.use(cors());
 
 app.get("/", (req, res) => {
