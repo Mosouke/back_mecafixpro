@@ -18,6 +18,10 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+app.get("/test", (req, res) => {
+    res.send("Route test OK");
+  });
+
 /**
  * Route definitions.
  */
@@ -41,10 +45,6 @@ app.use('/api/appointment', appointmentRoutes);
 app.use((req, res, next) => {
     res.status(404).json({ message: 'Route not found' });
 });
-
-app.get("/test", (req, res) => {
-    res.send("Route test OK");
-  });
 
 /**
  * Global error handler.
@@ -87,9 +87,7 @@ async function initApp() {
 
         await initRoles();
 
-        app.listen(PORT, () => {
-            console.log(`Server is running on port ${PORT}`);
-        });
+        module.exports = app; // Pour Vercel
     } catch (error) {
         console.error('Error initializing app:', error.message);
     }
