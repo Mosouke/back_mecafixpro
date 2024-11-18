@@ -57,7 +57,7 @@ app.use((err, req, res, next) => {
     res.status(500).json({ message: 'Internal server error', error: err.message });
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5432;
 
 /**
  * Initialize default roles in the database.
