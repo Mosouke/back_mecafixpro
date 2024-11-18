@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 require('dotenv').config();
-const pg = require('pg')
+const pg = require('pg');
 
 const {
     DB_NAME,
@@ -10,7 +10,7 @@ const {
     DB_DIALECT,
 } = process.env;
 
-// Vérifier que toutes les variables d'environnement sont définies
+// Vérifier les variables d'environnement
 if (!DB_NAME || !DB_USER || !DB_PASSWORD || !DB_HOST || !DB_DIALECT) {
     throw new Error("Une ou plusieurs variables d'environnement de base de données sont manquantes.");
 }
@@ -18,17 +18,14 @@ if (!DB_NAME || !DB_USER || !DB_PASSWORD || !DB_HOST || !DB_DIALECT) {
 // Configurer Sequelize
 const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
     host: DB_HOST,
-    dialect: DB_DIALECT,
-    logging: false, 
-    dialectModule:  pg,
+    dialect: DB_DIALECT, // Assurez-vous que DB_DIALECT = 'postgres'
+    logging: false,
+    dialectModule: pg,
     dialectOptions: {
-        ssl: {
-            require: true, 
+        ssl: process.env.NODE_ENV === 'production' ? {
+            require: true,
             rejectUnauthorized: false,
-        },
-    },
-    define: {
-        charset: 'utf8mb4', 
+        } : undefined,
     },
 });
 
@@ -38,7 +35,7 @@ sequelize.authenticate()
         console.log('✅ Connexion à la base de données réussie.');
     })
     .catch(err => {
-        console.error('❌ Erreur de connexion à la base de données:', err);
+        console.error('❌ Erreur de connexion à la base de données:', err.message);
     });
 
 module.exports = sequelize;
