@@ -29,7 +29,7 @@ app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
 app.get("/", (req, res) => {
-    res.send("Route test OK");
+    res.send("Route test OK v1.2");
   });
 
 /**
