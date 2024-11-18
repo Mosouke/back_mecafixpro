@@ -27,9 +27,6 @@ const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
             rejectUnauthorized: false,
         },
     },
-    define: {
-        charset: 'utf8mb4', 
-    },
 });
 
 // Tester la connexion
