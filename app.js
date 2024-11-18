@@ -29,9 +29,7 @@ app.use('/api/service', serviceRoutes);
 app.use('/api/specifiqueService', specificServiceRoutes);
 app.use('/api/appointment', appointmentRoutes);
 
-app.get("/test", (req, res) => {
-    res.send("Route test OK");
-  });
+
 
 /**
  * Handle 404 errors for undefined routes.
@@ -43,6 +41,10 @@ app.get("/test", (req, res) => {
 app.use((req, res, next) => {
     res.status(404).json({ message: 'Route not found' });
 });
+
+app.get("/test", (req, res) => {
+    res.send("Route test OK");
+  });
 
 /**
  * Global error handler.
