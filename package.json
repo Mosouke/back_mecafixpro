@@ -4,7 +4,7 @@
   "scripts": {
     "test": "jest",
     "testcover": "jest --coverage",
-    "start": "nodemon app.js",
+    "start": "node app.js",
     "docs": "jsdoc -c jsdoc.conf.json"
   },
   "keywords": [],
