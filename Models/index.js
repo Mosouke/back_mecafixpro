@@ -8,6 +8,7 @@ const Services = require('./Services');
 const SpecificServices = require('./SpecificServices');
 const Appointments = require('./Appointments');
 const sequelize = require('../config/config');
+const { alt } = require('joi');
 
 /**
  * Establishes relationships between models.
@@ -68,7 +69,7 @@ async function initRoles() {
  */
 async function initDatabase() {
     try {
-        await sequelize.sync({ force: false });
+        await sequelize.sync({ force: false, alter: true });
         await initRoles();
     } catch (error) {
         console.error('Error initializing database:', error);
