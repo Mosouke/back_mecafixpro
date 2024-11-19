@@ -13,8 +13,6 @@ if (!JWT_SECRET) {
 
 /**
  * Enregistrer un nouvel utilisateur dans la base de données.
- * @param {import('express').Request} req - Objet de requête Express.
- * @param {import('express').Response} res - Objet de réponse Express.
  */
 exports.register = async (req, res) => {
     const { mail_user, password } = req.body;
@@ -32,7 +30,7 @@ exports.register = async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 12);
         const user = await Users.create({ mail_user, password: hashedPassword });
-        const token = jwt.sign({ id: user.id_user, mail_user: user.mail_user }, JWT_SECRET, { expiresIn: TOKEN_EXPIRATION });
+        const token = jwt.sign({ id_user: user.id_user, mail_user: user.mail_user }, JWT_SECRET, { expiresIn: TOKEN_EXPIRATION });
 
         return res.status(201).json({ token });
     } catch (error) {
@@ -43,8 +41,6 @@ exports.register = async (req, res) => {
 
 /**
  * Connecter un utilisateur existant.
- * @param {import('express').Request} req - Objet de requête Express.
- * @param {import('express').Response} res - Objet de réponse Express.
  */
 exports.login = async (req, res) => {
     const { mail_user, password } = req.body;
@@ -66,7 +62,7 @@ exports.login = async (req, res) => {
         }
 
         const token = jwt.sign(
-            { id: user.id_user, mail_user: user.mail_user },
+            { id_user: user.id_user, mail_user: user.mail_user },
             JWT_SECRET,
             { expiresIn: TOKEN_EXPIRATION }
         );
@@ -81,12 +77,14 @@ exports.login = async (req, res) => {
 
 /**
  * Obtenir l'email de l'utilisateur authentifié.
- * @param {import('express').Request} req - Objet de requête Express.
- * @param {import('express').Response} res - Objet de réponse Express.
  */
 exports.userMail = async (req, res) => {
     try {
-        const user = await Users.findByPk(req.user.id, { attributes: ['mail_user'] });
+        if (!req.user) {
+            return res.status(401).json({ message: 'Utilisateur non authentifié' });
+        }
+
+        const user = await Users.findByPk(req.user.id_user, { attributes: ['mail_user'] });
 
         if (!user) {
             return res.status(404).json({ message: 'Utilisateur non trouvé' });
@@ -101,9 +99,19 @@ exports.userMail = async (req, res) => {
 
 /**
  * Vérifier la validité d'un token JWT.
- * @param {import('express').Request} req - Objet de requête Express.
- * @param {import('express').Response} res - Objet de réponse Express.
  */
 exports.verifyToken = async (req, res) => {
-    return res.status(200).json({ message: 'Token valide', user: { id: req.user.id, mail_user: req.user.mail_user } });
+    try {
+        if (!req.user) {
+            return res.status(401).json({ message: 'Token invalide ou utilisateur non authentifié' });
+        }
+
+        return res.status(200).json({
+            message: 'Token valide',
+            user: { id_user: req.user.id_user, mail_user: req.user.mail_user },
+        });
+    } catch (error) {
+        console.error('Erreur lors de la vérification du token:', error);
+        return res.status(500).json({ error: 'Erreur interne lors de la vérification du token' });
+    }
 };

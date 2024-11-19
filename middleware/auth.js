@@ -30,7 +30,7 @@ const authMiddleware = async (req, res, next) => {
         const decoded = jwt.verify(token, JWT_SECRET);
         const user = await Users.findByPk(decoded.id, {
             include: [{ model: Roles, as: 'role' }],
-            attributes: ['id', 'mail_user'],
+            attributes: ['id_user', 'mail_user'],
         });
 
         if (!user) {
