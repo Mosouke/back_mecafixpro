@@ -24,7 +24,7 @@ const app = express();
  * @type {import('cors').CorsOptions}
  */
 const corsOptions = {
-    origin: 'http://localhost:5173',
+    origin: 'https://front-react-mecafixpro.vercel.app',
     credentials: true, 
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], 
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
