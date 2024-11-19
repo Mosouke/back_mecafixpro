@@ -86,9 +86,10 @@ exports.getClients = async (req, res) => {
  */
 exports.getClient = async (req, res) => {
     try {
-        // Récupération de l'ID à partir de la requête
+        console.log("Utilisateur authentifié:", req.user);
         const { client_id } = req.user;
         const client = await Clients.findOne({ where: { client_id } });
+        
         if (!client) {
             return res.status(404).json({ message: 'Client not found' });
         }
