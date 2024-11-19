@@ -18,6 +18,7 @@ const { sequelize, Roles } = require('./Models');
 // Création de l'application Express
 const app = express();
 
+
 /**
  * Configuration des options CORS.
  * @type {import('cors').CorsOptions}
