@@ -106,12 +106,17 @@ exports.verifyToken = async (req, res) => {
             return res.status(401).json({ message: 'Token invalide ou utilisateur non authentifié' });
         }
 
+       
         return res.status(200).json({
             message: 'Token valide',
             user: { id_user: req.user.id_user, mail_user: req.user.mail_user },
         });
     } catch (error) {
         console.error('Erreur lors de la vérification du token:', error);
-        return res.status(500).json({ error: 'Erreur interne lors de la vérification du token' });
+
+        return res.status(500).json({
+            message: 'Erreur interne lors de la vérification du token',
+            error: error.message, 
+        });
     }
 };
