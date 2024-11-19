@@ -15,7 +15,6 @@ if (!JWT_SECRET) {
  * @param {import('express').NextFunction} next - La fonction suivante dans la chaîne de middleware.
  */
 const authMiddleware = async (req, res, next) => {
-    return res.status(200).json({ message: 'On arrive ici' });
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
