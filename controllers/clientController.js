@@ -56,6 +56,50 @@ exports.createClient = async (req, res) => {
 };
 
 /**
+ * Get all clients.
+ * 
+ * @function getClients
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} res - Response object containing all clients or an error message
+ * @throws {Error} 500 - Internal server error if unable to fetch clients
+ */
+exports.getClients = async (req, res) => {
+    try {
+        const clients = await Clients.findAll();
+        res.status(200).json(clients);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+/**
+ * Get a specific client by ID.
+ * 
+ * @function getClient
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} res - Response object containing the client or an error message
+ * @throws {Error} 404 - Client not found if the specified ID does not exist
+ * @throws {Error} 500 - Internal server error if unable to fetch the client
+ */
+exports.getClient = async (req, res) => {
+    try {
+        // Récupération de l'ID à partir de la requête
+        const { client_id } = req.user;
+        const client = await Clients.findOne({ where: { client_id } });
+        if (!client) {
+            return res.status(404).json({ message: 'Client not found' });
+        }
+        res.status(200).json(client);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+/**
  * Update an existing client by ID.
  * 
  * @function updateClient
