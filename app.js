@@ -7,10 +7,14 @@ const bodyParser = require('body-parser');
 const authRoutes = require('./routes/authRoutes');
 const clientRoutes = require('./routes/clientRoutes');
 const carRoutes = require('./routes/carRoutes');
-const garageRoutes = require('./routes/garageRoutes');
-const serviceRoutes = require('./routes/serviceRoutes');
-const specificServiceRoutes = require('./routes/specificServicesRoutes');
-const appointmentRoutes = require('./routes/appointmentRoutes');
+const garageRoutes = require('./routes/garageRoutes'); 
+const serviceRoutes = require('./routes/serviceRoutes'); 
+const specificServiceRoutes = require('./routes/specificServicesRoutes'); 
+const appointmentRoutes = require('./routes/appointmentRoutes'); 
+
+// Import des middlewares
+const { authMiddleware, adminMiddleware } = require('./middleware/auth'); 
+const upload = require('./middleware/upload'); 
 
 // Import des modèles
 const { sequelize, Roles } = require('./Models');
@@ -18,13 +22,9 @@ const { sequelize, Roles } = require('./Models');
 // Création de l'application Express
 const app = express();
 
-
-/**
- * Configuration des options CORS.
- * @type {import('cors').CorsOptions}
- */
+// Configuration des options CORS.
 const corsOptions = {
-    origin: 'https://front-react-mecafixpro.vercel.app',
+    origin: 'https://front-react-mecafixpro.vercel.app', 
     credentials: true, 
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], 
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
@@ -34,56 +34,43 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 
-/**
- * Middleware pour parser les requêtes JSON.
- */
+// Middleware pour parser les requêtes JSON.
 app.use(bodyParser.json());
 
-/**
- * Route de test pour vérifier si le serveur fonctionne.
- * @route GET /
- * @group General - Routes générales
- * @returns {string} 200 - Message indiquant que le serveur fonctionne
- */
+// Route de test pour vérifier si le serveur fonctionne.
 app.get("/", (req, res) => {
     res.send("Route test OK v1.2");
 });
 
-/**
- * Routes de l'application
- * @route /api/auth - Routes pour l'authentification
- * @route /api/client - Routes pour les clients
- * @route /api/car - Routes pour les voitures
- * @route /api/garage - Routes pour les garages
- * @route /api/service - Routes pour les services
- * @route /api/specifiqueService - Routes pour les services spécifiques
- * @route /api/appointment - Routes pour les rendez-vous
- */
+// Routes de l'application
+// Authentification
 app.use('/api/auth', authRoutes);
-app.use('/api/client', clientRoutes);
+
+// Gestion des clients
+app.use('/api/client', authMiddleware, clientRoutes); // Auth middleware pour sécuriser les routes client
+
+// Routes des autres entités
 app.use('/api/car', carRoutes);
 app.use('/api/garage', garageRoutes);
 app.use('/api/service', serviceRoutes);
 app.use('/api/specifiqueService', specificServiceRoutes);
 app.use('/api/appointment', appointmentRoutes);
 
-/**
- * Gestion des erreurs 404 pour les routes inexistantes.
- * @param {import('express').Request} req - Requête Express
- * @param {import('express').Response} res - Réponse Express
- * @param {Function} next - Fonction suivante
- */
+// Exemple de route pour upload d'image (si nécessaire)
+app.post('/api/client/upload', authMiddleware, upload.single('image'), (req, res) => {
+    try {
+        res.status(200).json({ message: 'Image téléchargée avec succès', file: req.file });
+    } catch (error) {
+        res.status(500).json({ error: 'Une erreur est survenue lors du téléchargement de l\'image.' });
+    }
+});
+
+// Gestion des erreurs 404 pour les routes inexistantes.
 app.use((req, res, next) => {
     res.status(404).json({ message: 'Route not found' });
 });
 
-/**
- * Middleware global de gestion des erreurs.
- * @param {Error} err - Objet erreur
- * @param {import('express').Request} req - Requête Express
- * @param {import('express').Response} res - Réponse Express
- * @param {Function} next - Fonction suivante
- */
+// Middleware global de gestion des erreurs.
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ message: 'Internal server error', error: err.message });
@@ -92,12 +79,7 @@ app.use((err, req, res, next) => {
 // Configuration du port
 const PORT = process.env.PORT || 5432;
 
-/**
- * Initialise les rôles par défaut dans la base de données.
- * @async
- * @function initRoles
- * @returns {Promise<void>}
- */
+// Initialise les rôles par défaut dans la base de données.
 async function initRoles() {
     const roles = ['client', 'pro_invité', 'pro', 'admin'];
     for (const role of roles) {
@@ -108,21 +90,13 @@ async function initRoles() {
     }
 }
 
-/**
- * Fonction principale pour initialiser l'application.
- * @async
- * @function initApp
- * @returns {Promise<void>}
- */
+// Fonction principale pour initialiser l'application.
 async function initApp() {
     try {
-        // Synchronisation avec la base de données sans la recréer
         await sequelize.sync({ force: false, alter: false });
 
-        // Initialisation des rôles
         await initRoles();
 
-        // Lancement du serveur
         app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);
         });
