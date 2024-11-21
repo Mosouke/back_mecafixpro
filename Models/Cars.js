@@ -75,7 +75,7 @@ const Cars = sequelize.define('cars', {
      * 
      * @type {number}
      */
-    fk_client_id: {
+    fk_user_client_id: {
         type: DataTypes.UUID,
         allowNull: false,
     },
@@ -85,7 +85,7 @@ const Cars = sequelize.define('cars', {
  * Associates the 'Cars' model with the 'Clients' model.
  * A car belongs to a single client, with a foreign key 'fk_client_id' referencing 'client_id' in 'Clients'.
  */
-Cars.belongsTo(UsersClients, { foreignKey: 'fk_client_id', targetKey: 'user_client_id' });
-UsersClients.hasMany(Cars, { foreignKey: 'fk_client_id', targetKey: 'user_client_id' });
+Cars.belongsTo(UsersClients, { foreignKey: 'user_client_id', targetKey: 'user_client_id' });
+UsersClients.hasMany(Cars, { foreignKey: 'user_client_id', targetKey: 'user_client_id' });
 
 module.exports = Cars;
