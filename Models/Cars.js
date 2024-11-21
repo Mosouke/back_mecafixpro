@@ -22,9 +22,9 @@ const Cars = sequelize.define('cars', {
      */
     car_id: {
         type: DataTypes.UUID,
-        allowNull: false,
-        autoIncrement: true,
+        defaultValue: DataTypes.UUIDV4, 
         primaryKey: true,
+        allowNull: false,
     },
     /**
      * The brand of the car.
