@@ -3,9 +3,9 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { UsersClients } = require('../Models');
 const { validationResult } = require('express-validator');
-const { createRouter } = require('uploadthing');  
-const { fileRouter } = require('../middleware/uploadThing');
 
+const uploadthing = require('uploadthing'); 
+const { fileRouter } = require('../middleware/uploadThing');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const TOKEN_EXPIRATION = '1d';
@@ -14,8 +14,7 @@ if (!JWT_SECRET) {
     throw new Error('JWT_SECRET must be defined in environment variables');
 }
 
-// Gestionnaire UploadThing
-const uploadHandler = createUploadthingHandler({ router: fileRouter });
+const uploadHandler = uploadthing.createUploadthingHandler({ router: fileRouter });
 
 /**
  * Enregistrer un nouvel utilisateur-client.
