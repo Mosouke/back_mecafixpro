@@ -73,10 +73,10 @@ const Cars = sequelize.define('cars', {
     /**
      * Foreign key linking to the client that owns the car (relationship to 'Clients' table).
      * 
-     * @type {number}
+     * @type {UUID}
      */
     fk_user_client_id: {
-        type: Sequelize.UUID,
+        type: DataTypes.UUID,
         references: {
             model: UsersClients,
             key: 'user_client_id',
