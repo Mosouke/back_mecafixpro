@@ -56,7 +56,7 @@ const UsersClients = sequelize.define('users_clients', {
 });
 
 // Définition des associations avec d'autres modèles
-UsersClients.belongsTo(Roles, { foreignKey: 'role_id', as: 'role' });
+UsersClients.belongsTo(Roles, { foreignKey: 'role_id', as: 'user_role' });
 Roles.hasMany(UsersClients, { foreignKey: 'role_id', as: 'clients' });
 
 module.exports = UsersClients;

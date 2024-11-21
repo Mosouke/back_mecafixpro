@@ -20,7 +20,7 @@ const sequelize = require('../config/config');
  */
 
 // UsersClients belong to Roles
-UsersClients.belongsTo(Roles, { foreignKey: 'fk_role_id', as: 'user_client' });
+UsersClients.belongsTo(Roles, { foreignKey: 'fk_role_id', as: 'user_role' });
 Roles.hasMany(UsersClients, { foreignKey: 'fk_role_id', as: 'clients' });
 
 // Cars belong to UsersClients 
