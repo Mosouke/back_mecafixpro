@@ -19,19 +19,16 @@ const sequelize = require('../config/config');
  * - Services have many SpecificServices.
  */
 
-// Changez l'alias ici pour qu'il soit unique
-UsersClients.belongsTo(Roles, { foreignKey: 'fk_role_id', as: 'userRoleAssociation' });  // Alias unique ici
+
+UsersClients.belongsTo(Roles, { foreignKey: 'fk_role_id', as: 'userRoleAssociation' }); 
 Roles.hasMany(UsersClients, { foreignKey: 'fk_role_id', as: 'clients' });
 
-// Cars belong to UsersClients 
 Cars.belongsTo(UsersClients, { foreignKey: 'fk_user_client_id', targetKey: 'user_client_id' });
 UsersClients.hasMany(Cars, { foreignKey: 'fk_user_client_id', targetKey: 'user_client_id' });
 
-// Services belong to Garages
 Services.belongsTo(Garages, { foreignKey: 'fk_garage_id', targetKey: 'garage_id' });
 Garages.hasMany(Services, { foreignKey: 'fk_garage_id', targetKey: 'garage_id' });
 
-// SpecificServices belong to Services
 SpecificServices.belongsTo(Services, { foreignKey: 'fk_service_id', targetKey: 'service_id' });
 Services.hasMany(SpecificServices, { foreignKey: 'fk_service_id', targetKey: 'service_id' });
 
@@ -50,7 +47,7 @@ async function initRoles() {
 // Initialize database
 async function initDatabase() {
     try {
-        await sequelize.sync({ force: false, alter: true });
+        await sequelize.sync({ force: false, alter: false });
         await initRoles();
     } catch (error) {
         console.error('Error initializing database:', error);
