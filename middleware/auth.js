@@ -1,6 +1,6 @@
 // @ts-nocheck
 const jwt = require('jsonwebtoken');
-const { Users, Roles } = require('../Models');
+const { UsersClients, Roles } = require('../Models');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -28,19 +28,22 @@ const authMiddleware = async (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
-        const user = await Users.findByPk(decoded.id, {
-            include: [{ model: Roles, as: 'role' }],
-            attributes: ['id', 'mail_user'],
+        console.log('Decoded JWT:', decoded);
+        
+        // Recherche de l'utilisateur dans le modèle UsersClients
+        const user_client = await UsersClients.findByPk(decoded.id_user_client, {
+            include: [{ model: Roles, as: 'role' }],  // On inclut les rôles associés
+            attributes: ['id_user_client', 'mail_user_client', 'role_id'], // Récupérer l'email et le rôle
         });
 
-        if (!user) {
+        if (!user_client) {
             return res.status(401).json({
                 success: false,
                 message: 'Utilisateur non trouvé',
             });
         }
 
-        req.user = user;
+        req.user_client = user_client;  // On utilise 'user_client' ici pour rester cohérent
         next();
     } catch (err) {
         if (err.name === 'TokenExpiredError') {
@@ -70,14 +73,15 @@ const authMiddleware = async (req, res, next) => {
  * @param {import('express').NextFunction} next - La fonction suivante dans la chaîne de middleware.
  */
 const adminMiddleware = async (req, res, next) => {
-    if (!req.user || !req.user.role) {
+    if (!req.user_client || !req.user_client.role) {
         return res.status(403).json({
             success: false,
             message: 'Accès refusé, utilisateur non authentifié.',
         });
     }
 
-    if (req.user.role.role_name === 'admin') {
+    // Vérification du rôle de l'utilisateur : on s'assure que l'utilisateur a bien le rôle 'admin'
+    if (req.user_client.role.role_name === 'admin') {
         return next();
     }
 

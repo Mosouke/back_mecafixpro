@@ -1,23 +1,28 @@
 // @ts-nocheck
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { Users } = require('../Models');
+const { UsersClients } = require('../Models');
 const { validationResult } = require('express-validator');
 
 const JWT_SECRET = process.env.JWT_SECRET;
-const TOKEN_EXPIRATION = '1d'; 
+const TOKEN_EXPIRATION = '1d';
 
 if (!JWT_SECRET) {
     throw new Error('JWT_SECRET must be defined in environment variables');
 }
 
 /**
- * Enregistrer un nouvel utilisateur dans la base de données.
- * @param {import('express').Request} req - Objet de requête Express.
- * @param {import('express').Response} res - Objet de réponse Express.
+ * Enregistrer un nouvel utilisateur avec des informations client.
  */
 exports.register = async (req, res) => {
-    const { mail_user, password } = req.body;
+    const { 
+        mail_user_client, 
+        password, 
+        user_client_name, 
+        user_client_last_name, 
+        user_client_phone_number, 
+        user_client_address 
+    } = req.body;
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -25,16 +30,28 @@ exports.register = async (req, res) => {
     }
 
     try {
-        const userExists = await Users.findOne({ where: { mail_user } });
+        const userExists = await UsersClients.findOne({ where: { mail_user_client } });
         if (userExists) {
             return res.status(400).json({ error: 'Cet email est déjà utilisé.' });
         }
 
         const hashedPassword = await bcrypt.hash(password, 12);
-        const user = await Users.create({ mail_user, password: hashedPassword });
-        const token = jwt.sign({ id: user.id_user, mail_user: user.mail_user }, JWT_SECRET, { expiresIn: TOKEN_EXPIRATION });
+        const user = await UsersClients.create({
+            mail_user_client,
+            password: hashedPassword,
+            user_client_name: user_client_name || null,
+            user_client_last_name: user_client_last_name || null,
+            user_client_phone_number: user_client_phone_number || null,
+            user_client_address: user_client_address || null,
+        });
 
-        return res.status(201).json({ token });
+        const token = jwt.sign(
+            { id_user_client: user.id_user_client, mail_user_client: user.mail_user_client },
+            JWT_SECRET,
+            { expiresIn: TOKEN_EXPIRATION }
+        );
+
+        return res.status(201).json({ token, user });
     } catch (error) {
         console.error('Erreur lors de l\'enregistrement:', error);
         return res.status(500).json({ error: 'Une erreur est survenue lors de l\'enregistrement.' });
@@ -43,11 +60,9 @@ exports.register = async (req, res) => {
 
 /**
  * Connecter un utilisateur existant.
- * @param {import('express').Request} req - Objet de requête Express.
- * @param {import('express').Response} res - Objet de réponse Express.
  */
 exports.login = async (req, res) => {
-    const { mail_user, password } = req.body;
+    const { mail_user_client, password } = req.body;
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -55,7 +70,7 @@ exports.login = async (req, res) => {
     }
 
     try {
-        const user = await Users.findOne({ where: { mail_user } });
+        const user = await UsersClients.findOne({ where: { mail_user_client } });
         if (!user) {
             return res.status(401).json({ message: 'Identifiants invalides' });
         }
@@ -66,13 +81,12 @@ exports.login = async (req, res) => {
         }
 
         const token = jwt.sign(
-            { id: user.id_user, mail_user: user.mail_user },
+            { id_user_client: user.id_user_client, mail_user_client: user.mail_user_client },
             JWT_SECRET,
             { expiresIn: TOKEN_EXPIRATION }
         );
 
         return res.status(200).json({ token });
-
     } catch (error) {
         console.error('Erreur lors de la connexion:', error);
         return res.status(500).json({ error: 'Une erreur est survenue lors de la connexion.' });
@@ -80,30 +94,68 @@ exports.login = async (req, res) => {
 };
 
 /**
- * Obtenir l'email de l'utilisateur authentifié.
- * @param {import('express').Request} req - Objet de requête Express.
- * @param {import('express').Response} res - Objet de réponse Express.
+ * Récupérer les informations utilisateur et client associées.
  */
-exports.userMail = async (req, res) => {
+exports.getUserAndClientInfo = async (req, res) => {
     try {
-        const user = await Users.findByPk(req.user.id, { attributes: ['mail_user'] });
+        if (!req.user) {
+            return res.status(401).json({ message: 'Utilisateur non authentifié' });
+        }
+
+        const user = await UsersClients.findByPk(req.user.id_user_client, {
+            attributes: [
+                'mail_user_client',
+                'user_client_name',
+                'user_client_last_name',
+                'user_client_phone_number',
+                'user_client_address',
+                'user_client_image_name',
+            ],
+        });
 
         if (!user) {
             return res.status(404).json({ message: 'Utilisateur non trouvé' });
         }
 
-        return res.status(200).json({ email: user.mail_user });
+        return res.status(200).json(user);
     } catch (error) {
-        console.error('Erreur lors de la récupération de l\'email:', error);
+        console.error('Erreur lors de la récupération des informations:', error);
         return res.status(500).json({ error: 'Une erreur interne est survenue' });
     }
 };
 
 /**
- * Vérifier la validité d'un token JWT.
- * @param {import('express').Request} req - Objet de requête Express.
- * @param {import('express').Response} res - Objet de réponse Express.
+ * Mettre à jour les informations client d’un utilisateur existant.
  */
-exports.verifyToken = async (req, res) => {
-    return res.status(200).json({ message: 'Token valide', user: { id: req.user.id, mail_user: req.user.mail_user } });
+exports.updateClientInfo = async (req, res) => {
+    const { 
+        user_client_name, 
+        user_client_last_name, 
+        user_client_phone_number, 
+        user_client_address, 
+        user_client_image_name 
+    } = req.body;
+
+    try {
+        const updated = await UsersClients.update(
+            { 
+                user_client_name, 
+                user_client_last_name, 
+                user_client_phone_number, 
+                user_client_address, 
+                user_client_image_name 
+            },
+            { where: { id_user_client: req.user.id_user_client } }
+        );
+
+        if (updated[0] === 0) {
+            return res.status(404).json({ message: 'Client non trouvé' });
+        }
+
+        const updatedClient = await UsersClients.findOne({ where: { id_user_client: req.user.id_user_client } });
+        res.status(200).json(updatedClient);
+    } catch (error) {        
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
 };

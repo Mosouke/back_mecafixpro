@@ -15,13 +15,11 @@ const upload = require('../middleware/multer');
 router.get('/', authMiddleware, clientController.getClients);
 
 /**
- * @route GET /clients/{client_id}
+ * @route GET /clients/profile
  * @group Clients - Opérations concernant les clients
- * @param {number} client_id.path.required - ID du client à récupérer.
  * @returns {Object} 200 - Objet client.
  * @returns {Object} 404 - Client non trouvé.
  * @returns {Object} 500 - Erreur interne du serveur.
- * @security {}
  */
 router.get('/profile', authMiddleware, clientController.getClient);
 
@@ -37,7 +35,6 @@ router.get('/profile', authMiddleware, clientController.getClient);
  * @returns {Object} 201 - Client créé avec succès.
  * @returns {Object} 400 - Mauvaise requête si la validation échoue.
  * @returns {Object} 500 - Erreur interne du serveur.
- * @security {}
  */
 router.post('/add', authMiddleware, upload.single('client_image'), validateClientCreation, clientController.createClient);
 
@@ -55,7 +52,6 @@ router.post('/add', authMiddleware, upload.single('client_image'), validateClien
  * @returns {Object} 404 - Client non trouvé.
  * @returns {Object} 400 - Mauvaise requête si la validation échoue.
  * @returns {Object} 500 - Erreur interne du serveur.
- * @security {}
  */
 router.put('/update/:client_id', authMiddleware, upload.single('client_image'), validateClientUpdate, clientController.updateClient);
 
