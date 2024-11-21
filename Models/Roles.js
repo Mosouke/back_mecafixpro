@@ -6,10 +6,6 @@ const sequelize = require('../config/config');
  * Sequelize model representing the 'Roles' table.
  * This table defines the different roles in the application, 
  * such as 'client', 'pro_invité', 'pro', and 'admin'.
- *
- * @typedef {Object} Roles
- * @property {number} role_id - The unique identifier for the role (Primary Key).
- * @property {string} role_name - The name of the role, constrained to the following values: 'client', 'pro_invité', 'pro', 'admin'.
  */
 const Roles = sequelize.define('roles', {
     /**
@@ -26,16 +22,16 @@ const Roles = sequelize.define('roles', {
     /**
      * The name of the role.
      * Allowed values are 'client', 'pro_invité', 'pro', 'admin'.
-     * 
-     * @type {'client' | 'pro_invité' | 'pro' | 'admin'}
      */
     role_name: {
-        type: DataTypes.ENUM('client', 'pro_invité', 'pro', 'admin'),
+        type: DataTypes.ENUM('client', 'pro_invité', 'pro', 'admin'), 
         allowNull: false,
-        unique: true,
+        unique: true, 
     },
+}, {
+   
     tableName: 'roles',
-    timestamps: false,
+    timestamps: false, 
 });
 
 module.exports = Roles;
