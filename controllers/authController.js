@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { UsersClients } = require('../Models');
 const { validationResult } = require('express-validator');
-const { createUploadthingHandler } = require('uploadthing/express');
+const { createRouter } = require('uploadthing');  
 const { fileRouter } = require('../middleware/uploadThing');
 
 const JWT_SECRET = process.env.JWT_SECRET;
