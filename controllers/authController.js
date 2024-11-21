@@ -6,6 +6,7 @@ const { validationResult } = require('express-validator');
 const { createRouter } = require('uploadthing');  
 const { fileRouter } = require('../middleware/uploadThing');
 
+
 const JWT_SECRET = process.env.JWT_SECRET;
 const TOKEN_EXPIRATION = '1d';
 
