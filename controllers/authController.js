@@ -11,8 +11,6 @@ if (!JWT_SECRET) {
     throw new Error('JWT_SECRET must be defined in environment variables');
 }
 
-const uploadHandler = uploadthing.createUploadthingHandler({ router: fileRouter });
-
 /**
  * Enregistrer un nouvel utilisateur-client.
  * @param {Object} req - Requête Express
