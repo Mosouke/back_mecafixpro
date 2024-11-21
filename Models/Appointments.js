@@ -94,7 +94,7 @@ const Appointments = sequelize.define('appointments', {
 });
 
 // Importing related models to establish associations
-const Client = require('./Clients');
+const UsersClients = require('./UsersClients');
 const Garage = require('./Garages');
 const Service = require('./Services');
 const SpecificService = require('./SpecificServices');
@@ -106,7 +106,7 @@ const SpecificService = require('./SpecificServices');
  * - A general service
  * - A specific service
  */
-Appointments.belongsTo(Client, { foreignKey: 'fk_client_id', targetKey: 'client_id' });
+Appointments.belongsTo(UsersClients, { foreignKey: 'fk_user_client_id', targetKey: 'user_client_id' });
 Appointments.belongsTo(Garage, { foreignKey: 'fk_garage_id', targetKey: 'garage_id' });
 Appointments.belongsTo(Service, { foreignKey: 'fk_service_id', targetKey: 'service_id' });
 Appointments.belongsTo(SpecificService, { foreignKey: 'fk_specific_service_id', targetKey: 'specificService_id' });
