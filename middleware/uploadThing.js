@@ -1,26 +1,20 @@
+const { createUploadthing } = require('uploadthing/express'); // Importation CommonJS
 
-const express = require('express');
-const { createUploadthing } = require('uploadthing/express');  
-const { validationResult } = require('express-validator');
-
-const app = express();
-const f = createUploadthing(); 
+const f = createUploadthing();
 
 const uploadRouter = {
   imageUploader: f({
     image: {
-      maxFileSize: '4MB',
+      /**
+       * Liste complète des options et valeurs par défaut, voir la référence API File Route
+       * @see https://docs.uploadthing.com/file-routes#route-config
+       */
+      maxFileSize: "4MB",
       maxFileCount: 1,
     },
   }).onUploadComplete((data) => {
-    console.log('Téléversement terminé', data);
+    console.log("Téléchargement terminé", data);
   }),
 };
 
-
-app.use('/api/uploadthing', uploadRouter.imageUploader);
-
-// Démarrer votre serveur sur le port 3000
-app.listen(3000, () => {
-  console.log('Serveur démarré sur le port 3000');
-});
+module.exports = uploadRouter;
