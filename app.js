@@ -11,6 +11,8 @@ const { sequelize, Roles } = require('./Models');
 const { body } = require('express-validator');
 const bodyParser = require('body-parser');
 
+const app = express();
+
 app.use(express.json());
 app.use(cors({
     origin: process.env.BASE_URL, 
