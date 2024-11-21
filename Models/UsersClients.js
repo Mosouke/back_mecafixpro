@@ -38,10 +38,6 @@ const UsersClients = sequelize.define('users_clients', {
         type: DataTypes.STRING(255),
         allowNull: true
     },
-    user_client_image_name: {
-        type: DataTypes.STRING(255),
-        allowNull: true
-    },
     role_id: {
         type: DataTypes.INTEGER,
         references: {

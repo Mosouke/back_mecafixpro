@@ -6,8 +6,6 @@ const garageRoutes = require('./routes/garageRoutes');
 const serviceRoutes = require('./routes/serviceRoutes');
 const specificServiceRoutes = require('./routes/specificServicesRoutes');
 const appointmentRoutes = require('./routes/appointmentRoutes');
-const { createRouteHandler } = require('uploadthing/express'); 
-const uploadRouter = require('./middleware/uploadThing'); 
 const cors = require('cors');
 const { sequelize, Roles } = require('./Models');
 const { body } = require('express-validator');
@@ -34,13 +32,7 @@ app.use('/api/garage', garageRoutes);
 app.use('/api/service', serviceRoutes);
 app.use('/api/specifiqueService', specificServiceRoutes);
 app.use('/api/appointment', appointmentRoutes);
-app.use(
-    '/api/uploadthing', 
-    createRouteHandler({
-      router: uploadRouter,
-      config: { /* votre configuration ici, si nécessaire */ }
-    })
-  );
+
 
 /**
  * Handle 404 errors for undefined routes.

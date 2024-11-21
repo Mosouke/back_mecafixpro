@@ -4,10 +4,6 @@ const jwt = require('jsonwebtoken');
 const { UsersClients } = require('../Models');
 const { validationResult } = require('express-validator');
 
-
-const { createUploadthing } = require('uploadthing');
-const { fileRouter } = require('../middleware/uploadThing');
-
 const JWT_SECRET = process.env.JWT_SECRET;
 const TOKEN_EXPIRATION = '1d';
 
@@ -44,7 +40,7 @@ exports.register = async (req, res) => {
             client_last_name,
             client_phone_number,
             client_address,
-            client_image_name: null, // À définir après l'upload si nécessaire
+           
         });
 
         const token = jwt.sign(
@@ -112,7 +108,6 @@ exports.getAllUsersClients = async (req, res) => {
                 'client_last_name',
                 'client_phone_number',
                 'client_address',
-                'client_image_name',
             ],
         });
         return res.status(200).json(usersClients);
@@ -140,7 +135,6 @@ exports.getUserClientById = async (req, res) => {
                 'client_last_name',
                 'client_phone_number',
                 'client_address',
-                'client_image_name',
             ],
         });
 
@@ -174,7 +168,7 @@ exports.updateUserClient = async (req, res) => {
         const client_image_url = req.body.files?.[0]?.url || null;
 
         const [updated] = await UsersClients.update(
-            { client_name, client_last_name, client_phone_number, client_address, client_image_name: client_image_url },
+            { client_name, client_last_name, client_phone_number, client_address },
             { where: { user_client_id } }
         );
 

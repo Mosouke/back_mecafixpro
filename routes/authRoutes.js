@@ -4,9 +4,9 @@ const router = express.Router();
 const authController = require('../controllers/authController');
 const { authMiddleware, adminMiddleware } = require('../middleware/auth');
 const { validateUserCreation, validateUserLogin, validateUserClientUpdate } = require('../middleware/validator');
-const upload = require('../middleware/uploadThing');
 
-const uploadHandler = createUploadthingHandler({ router: fileRouter });
+
+
 /**
  * @route POST /register
  * @group Authentication - Operations about authentication
@@ -67,7 +67,6 @@ router.get('/user-client-profile', authMiddleware, authController.getUserClientB
 router.put(
     '/user-client/update/:user_client_id',
     authMiddleware, 
-    uploadHandler,  
     validateUserClientUpdate, 
     authController.updateUserClient 
 );
