@@ -57,6 +57,6 @@ const UsersClients = sequelize.define('users_clients', {
 
 // Changez l'alias en 'clientRole' pour éviter les doublons avec d'autres alias
 UsersClients.belongsTo(Roles, { foreignKey: 'role_id', as: 'clientRole' });
-Roles.hasMany(UsersClients, { foreignKey: 'role_id', as: 'clients' });
+Roles.hasMany(UsersClients, { foreignKey: 'role_id', as: 'users_clients' });
 
 module.exports = UsersClients;
