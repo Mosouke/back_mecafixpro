@@ -1,6 +1,6 @@
 // @ts-nocheck
 const jwt = require('jsonwebtoken');
-const { UsersClients, Roles } = require('../Models');
+const { UsersClients, Roles } = require('../Models'); 
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -20,49 +20,61 @@ const authMiddleware = async (req, res, next) => {
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return res.status(401).json({
             success: false,
-            message: "Token d'authentification manquant ou invalide",
+            message: "Token d'authentification manquant ou invalide.",
         });
     }
 
     const token = authHeader.split(' ')[1];
 
+    if (!token) {
+        return res.status(401).json({
+            success: false,
+            message: "Token corrompu ou vide.",
+        });
+    }
+
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
-        console.log('Decoded JWT:', decoded);
-        
-        // Recherche de l'utilisateur dans le modèle UsersClients
-        const user_client = await UsersClients.findByPk(decoded.id_user_client, {
-            include: [{ model: Roles, as: 'role' }],  // On inclut les rôles associés
-            attributes: ['id_user_client', 'mail_user_client', 'role_id'], // Récupérer l'email et le rôle
+
+        const user = await UsersClients.findByPk(decoded.user_client_id, {
+            include: [{ model: Roles, as: 'role', attributes: ['role_name'] }],
+            attributes: ['user_client_id', 'mail_user_client', 'fk_role_id'],
         });
 
-        if (!user_client) {
+        if (!user) {
             return res.status(401).json({
                 success: false,
-                message: 'Utilisateur non trouvé',
+                message: "Utilisateur non trouvé.",
             });
         }
 
-        req.user_client = user_client;  // On utilise 'user_client' ici pour rester cohérent
+        req.user = {
+            user_client_id: user.user_client_id,
+            mail_user_client: user.mail_user_client,
+            role_name: user.role ? user.role.role_name : null,
+        };
+
         next();
     } catch (err) {
         if (err.name === 'TokenExpiredError') {
             return res.status(401).json({
                 success: false,
-                message: 'Token expiré',
-            });
-        } else if (err.name === 'JsonWebTokenError') {
-            return res.status(401).json({
-                success: false,
-                message: 'Token invalide',
-            });
-        } else {
-            console.error('Erreur inattendue:', err);
-            return res.status(500).json({
-                success: false,
-                message: "Erreur serveur lors de l'authentification",
+                message: "Le token a expiré. Veuillez vous reconnecter.",
             });
         }
+
+        if (err.name === 'JsonWebTokenError') {
+            return res.status(401).json({
+                success: false,
+                message: "Le token est invalide. Vérifiez vos informations.",
+            });
+        }
+
+        console.error("Erreur inattendue lors de l'authentification :", err);
+        return res.status(500).json({
+            success: false,
+            message: "Erreur serveur lors de l'authentification.",
+        });
     }
 };
 
@@ -73,25 +85,24 @@ const authMiddleware = async (req, res, next) => {
  * @param {import('express').NextFunction} next - La fonction suivante dans la chaîne de middleware.
  */
 const adminMiddleware = async (req, res, next) => {
-    if (!req.user_client || !req.user_client.role) {
+    if (!req.user || !req.user.role_name) {
         return res.status(403).json({
             success: false,
-            message: 'Accès refusé, utilisateur non authentifié.',
+            message: "Accès refusé : utilisateur non authentifié ou rôle manquant.",
         });
     }
 
-    // Vérification du rôle de l'utilisateur : on s'assure que l'utilisateur a bien le rôle 'admin'
-    if (req.user_client.role.role_name === 'admin') {
+    if (req.user.role_name === 'admin') {
         return next();
     }
 
     return res.status(403).json({
         success: false,
-        message: 'Accès refusé, privilèges insuffisants.',
+        message: "Accès refusé : privilèges administrateurs nécessaires.",
     });
 };
 
 module.exports = {
     authMiddleware,
-    adminMiddleware
+    adminMiddleware,
 };

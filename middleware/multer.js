@@ -1,24 +1,45 @@
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
-// Configuration du stockage des fichiers
+// Vérifier si le dossier 'uploads/' existe, sinon le créer
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir);
+}
+
 const storage = multer.diskStorage({
+    /**
+     * Fonction de destination pour le stockage des fichiers.
+     * @param {Object} req - L'objet de requête.
+     * @param {Object} file - L'objet de fichier.
+     * @param {function} cb - Fonction de rappel pour indiquer la destination.
+     */
     destination: function (req, file, cb) {
-        // Assure-toi que le dossier 'uploads/' existe ou crée-le au besoin
-        cb(null, 'uploads/');
+        cb(null, uploadDir); 
     },
+
+    /**
+     * Fonction de nommage du fichier.
+     * @param {Object} req - L'objet de requête.
+     * @param {Object} file - L'objet de fichier.
+     * @param {function} cb - Fonction de rappel pour indiquer le nom du fichier.
+     */
     filename: function (req, file, cb) {
-        // Génère un suffixe unique pour éviter les conflits de nom de fichier
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + '-' + file.originalname);
+        cb(null, uniqueSuffix + '-' + file.originalname); 
     }
 });
 
-// Filtre pour vérifier que l'extension et le type MIME sont valides
 const fileFilter = (req, file, cb) => {
-    // Extensions acceptées
+    /**
+     * Fonction de filtrage des types de fichiers acceptés.
+     * @param {Object} req - L'objet de requête.
+     * @param {Object} file - L'objet de fichier.
+     * @param {function} cb - Fonction de rappel pour accepter ou refuser le fichier.
+     */
     const filetypes = /jpeg|jpg|png/;
-    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase()); 
     const mimetype = filetypes.test(file.mimetype);
 
     if (mimetype && extname) {
@@ -28,25 +49,10 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
-// Paramètres de configuration de multer
 const upload = multer({
     storage: storage,
     fileFilter: fileFilter,
-    limits: { fileSize: 2 * 1024 * 1024 }
-});
+    limits: { fileSize: 2 * 1024 * 1024 } 
+}).single('image'); 
 
-// Middleware d'upload d'image pour l'utilisateur/client
-const uploadImage = (req, res, next) => {
-    upload.single('user_client_image')(req, res, (err) => {
-        if (err) {
-            return res.status(400).json({ message: err.message }); 
-        }
-        // Ajouter l'image au corps de la requête
-        if (req.file) {
-            req.body.user_client_image_name = req.file.filename; 
-        }
-        next();
-    });
-};
-
-module.exports = uploadImage;
+module.exports = upload;
