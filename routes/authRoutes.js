@@ -4,8 +4,9 @@ const router = express.Router();
 const authController = require('../controllers/authController');
 const { authMiddleware, adminMiddleware } = require('../middleware/auth');
 const { validateUserCreation, validateUserLogin, validateUserClientUpdate } = require('../middleware/validator');
-const upload = require('../middleware/multer');
+const upload = require('../middleware/uploadThing');
 
+const uploadHandler = createUploadthingHandler({ router: fileRouter });
 /**
  * @route POST /register
  * @group Authentication - Operations about authentication
@@ -53,7 +54,7 @@ router.get('/user-client-profile', authMiddleware, authController.getUserClientB
  * @group User Client - Operations regarding updating a user client
  * @param {number} user_client_id.path.required - ID of the user client to update.
  * @param {Object} req - Express request object containing updated user client data.
- * @param {string} req.body.client_image_name - User client image name (optional).
+ * @param {string} req.body.client_image_url - URL of the uploaded client image (optional).
  * @param {string} req.body.client_name - User client's first name (optional).
  * @param {string} req.body.client_last_name - User client's last name (optional).
  * @param {string} req.body.client_phone_number - User client's phone number (optional).
@@ -63,7 +64,13 @@ router.get('/user-client-profile', authMiddleware, authController.getUserClientB
  * @returns {Object} 400 - Bad request if validation fails.
  * @returns {Object} 500 - Internal server error.
  */
-router.put('/user-client/update/:user_client_id', authMiddleware, upload.single('client_image'), validateUserClientUpdate, authController.updateUserClient);
+router.put(
+    '/user-client/update/:user_client_id',
+    authMiddleware, 
+    uploadHandler,  
+    validateUserClientUpdate, 
+    authController.updateUserClient 
+);
 
 /**
  * @route GET /admin-only

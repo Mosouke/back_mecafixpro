@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { UsersClients } = require('../Models');
 const { validationResult } = require('express-validator');
+const { createUploadthingHandler } = require('uploadthing/express');
+const { fileRouter } = require('../middleware/uploadThing');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const TOKEN_EXPIRATION = '1d';
@@ -11,13 +13,16 @@ if (!JWT_SECRET) {
     throw new Error('JWT_SECRET must be defined in environment variables');
 }
 
+// Gestionnaire UploadThing
+const uploadHandler = createUploadthingHandler({ router: fileRouter });
+
 /**
  * Enregistrer un nouvel utilisateur-client.
  * @param {Object} req - Requête Express
  * @param {Object} res - Réponse Express
  */
 exports.register = async (req, res) => {
-    const { mail_user_client, password, client_name, client_last_name, client_phone_number, client_address, client_image_name } = req.body;
+    const { mail_user_client, password, client_name, client_last_name, client_phone_number, client_address } = req.body;
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -38,7 +43,7 @@ exports.register = async (req, res) => {
             client_last_name,
             client_phone_number,
             client_address,
-            client_image_name,
+            client_image_name: null, // À définir après l'upload si nécessaire
         });
 
         const token = jwt.sign(
@@ -156,7 +161,7 @@ exports.getUserClientById = async (req, res) => {
  */
 exports.updateUserClient = async (req, res) => {
     const { user_client_id } = req.params;
-    const { client_name, client_last_name, client_phone_number, client_address, client_image_name } = req.body;
+    const { client_name, client_last_name, client_phone_number, client_address } = req.body;
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -164,8 +169,11 @@ exports.updateUserClient = async (req, res) => {
     }
 
     try {
+        // Gestion des fichiers avec UploadThing
+        const client_image_url = req.body.files?.[0]?.url || null;
+
         const [updated] = await UsersClients.update(
-            { client_name, client_last_name, client_phone_number, client_address, client_image_name },
+            { client_name, client_last_name, client_phone_number, client_address, client_image_name: client_image_url },
             { where: { user_client_id } }
         );
 
