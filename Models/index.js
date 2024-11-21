@@ -19,8 +19,8 @@ const sequelize = require('../config/config');
  * - Services have many SpecificServices.
  */
 
-// UsersClients belong to Roles
-UsersClients.belongsTo(Roles, { foreignKey: 'fk_role_id', as: 'userRoleAlias' });  // Changez l'alias ici
+// Changez l'alias ici pour qu'il soit unique
+UsersClients.belongsTo(Roles, { foreignKey: 'fk_role_id', as: 'userRoleAssociation' });  // Alias unique ici
 Roles.hasMany(UsersClients, { foreignKey: 'fk_role_id', as: 'clients' });
 
 // Cars belong to UsersClients 
