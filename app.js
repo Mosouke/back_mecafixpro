@@ -93,7 +93,7 @@ async function initRoles() {
 // Fonction principale pour initialiser l'application.
 async function initApp() {
     try {
-        await sequelize.sync({ force: false, alter: false });
+        await sequelize.sync({ force: false, alter: true });
 
         await initRoles();
 
