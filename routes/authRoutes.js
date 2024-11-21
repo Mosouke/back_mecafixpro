@@ -54,6 +54,7 @@ router.get('/user-mail', authMiddleware, authController.userMail);
  * @description Example of an admin-only route.
  * @returns {Object} 200 - Access granted.
  * @returns {Object} 403 - Forbidden if the user is not an admin.
+ * 
  */
 router.get('/admin-only', authMiddleware, adminMiddleware, (req, res) => {
     res.status(200).json({ message: 'Access granted to admin area' });
