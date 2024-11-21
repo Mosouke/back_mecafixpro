@@ -23,7 +23,7 @@ const Appointments = sequelize.define('appointments', {
      * @type {number}
      */
     appt_id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,

@@ -21,7 +21,7 @@ const Cars = sequelize.define('cars', {
      * @type {number}
      */
     car_id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,

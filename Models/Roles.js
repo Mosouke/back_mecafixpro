@@ -14,7 +14,7 @@ const Roles = sequelize.define('roles', {
      * @type {number}
      */
     role_id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         allowNull: false,
         primaryKey: true,
         autoIncrement: true,

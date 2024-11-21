@@ -41,7 +41,7 @@ const UsersClients = sequelize.define('users_clients', {
     role_id: {
         type: DataTypes.INTEGER,
         references: {
-            model: Roles, // Dépend de la table des rôles
+            model: Roles, 
             key: 'role_id'
         },
         allowNull: false
