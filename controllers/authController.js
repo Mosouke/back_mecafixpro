@@ -12,17 +12,12 @@ if (!JWT_SECRET) {
 }
 
 /**
- * Enregistrer un nouvel utilisateur avec des informations client.
+ * Enregistrer un nouvel utilisateur-client.
+ * @param {Object} req - Requête Express
+ * @param {Object} res - Réponse Express
  */
 exports.register = async (req, res) => {
-    const { 
-        mail_user_client, 
-        password, 
-        user_client_name, 
-        user_client_last_name, 
-        user_client_phone_number, 
-        user_client_address 
-    } = req.body;
+    const { mail_user_client, password, client_name, client_last_name, client_phone_number, client_address, client_image_name } = req.body;
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -36,30 +31,33 @@ exports.register = async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 12);
-        const user = await UsersClients.create({
+        const newUserClient = await UsersClients.create({
             mail_user_client,
             password: hashedPassword,
-            user_client_name: user_client_name || null,
-            user_client_last_name: user_client_last_name || null,
-            user_client_phone_number: user_client_phone_number || null,
-            user_client_address: user_client_address || null,
+            client_name,
+            client_last_name,
+            client_phone_number,
+            client_address,
+            client_image_name,
         });
 
         const token = jwt.sign(
-            { id_user_client: user.id_user_client, mail_user_client: user.mail_user_client },
+            { id: newUserClient.user_client_id, mail_user_client: newUserClient.mail_user_client },
             JWT_SECRET,
             { expiresIn: TOKEN_EXPIRATION }
         );
 
-        return res.status(201).json({ token, user });
+        return res.status(201).json({ token, user: newUserClient });
     } catch (error) {
-        console.error('Erreur lors de l\'enregistrement:', error);
+        console.error('Erreur lors de l\'enregistrement :', error);
         return res.status(500).json({ error: 'Une erreur est survenue lors de l\'enregistrement.' });
     }
 };
 
 /**
- * Connecter un utilisateur existant.
+ * Connecter un utilisateur-client existant.
+ * @param {Object} req - Requête Express
+ * @param {Object} res - Réponse Express
  */
 exports.login = async (req, res) => {
     const { mail_user_client, password } = req.body;
@@ -72,90 +70,122 @@ exports.login = async (req, res) => {
     try {
         const user = await UsersClients.findOne({ where: { mail_user_client } });
         if (!user) {
-            return res.status(401).json({ message: 'Identifiants invalides' });
+            return res.status(401).json({ message: 'Identifiants invalides.' });
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
-            return res.status(401).json({ message: 'Identifiants invalides' });
+            return res.status(401).json({ message: 'Identifiants invalides.' });
         }
 
         const token = jwt.sign(
-            { id_user_client: user.id_user_client, mail_user_client: user.mail_user_client },
+            { id: user.user_client_id, mail_user_client: user.mail_user_client },
             JWT_SECRET,
             { expiresIn: TOKEN_EXPIRATION }
         );
 
-        return res.status(200).json({ token });
+        return res.status(200).json({ token, user });
     } catch (error) {
-        console.error('Erreur lors de la connexion:', error);
+        console.error('Erreur lors de la connexion :', error);
         return res.status(500).json({ error: 'Une erreur est survenue lors de la connexion.' });
     }
 };
 
 /**
- * Récupérer les informations utilisateur et client associées.
+ * Obtenir tous les utilisateurs-clients.
+ * @param {Object} req - Requête Express
+ * @param {Object} res - Réponse Express
  */
-exports.getUserAndClientInfo = async (req, res) => {
+exports.getAllUsersClients = async (req, res) => {
     try {
-        if (!req.user) {
-            return res.status(401).json({ message: 'Utilisateur non authentifié' });
-        }
-
-        const user = await UsersClients.findByPk(req.user.id_user_client, {
+        const usersClients = await UsersClients.findAll({
             attributes: [
+                'user_client_id',
                 'mail_user_client',
-                'user_client_name',
-                'user_client_last_name',
-                'user_client_phone_number',
-                'user_client_address',
-                'user_client_image_name',
+                'client_name',
+                'client_last_name',
+                'client_phone_number',
+                'client_address',
+                'client_image_name',
             ],
         });
-
-        if (!user) {
-            return res.status(404).json({ message: 'Utilisateur non trouvé' });
-        }
-
-        return res.status(200).json(user);
+        return res.status(200).json(usersClients);
     } catch (error) {
-        console.error('Erreur lors de la récupération des informations:', error);
-        return res.status(500).json({ error: 'Une erreur interne est survenue' });
+        console.error('Erreur lors de la récupération des utilisateurs-clients :', error);
+        return res.status(500).json({ error: 'Une erreur est survenue.' });
     }
 };
 
 /**
- * Mettre à jour les informations client d’un utilisateur existant.
+ * Obtenir les informations d'un utilisateur-client spécifique.
+ * @param {Object} req - Requête Express
+ * @param {Object} res - Réponse Express
  */
-exports.updateClientInfo = async (req, res) => {
-    const { 
-        user_client_name, 
-        user_client_last_name, 
-        user_client_phone_number, 
-        user_client_address, 
-        user_client_image_name 
-    } = req.body;
-
+exports.getUserClientById = async (req, res) => {
     try {
-        const updated = await UsersClients.update(
-            { 
-                user_client_name, 
-                user_client_last_name, 
-                user_client_phone_number, 
-                user_client_address, 
-                user_client_image_name 
-            },
-            { where: { id_user_client: req.user.id_user_client } }
-        );
+        const { user_client_id } = req.params;
 
-        if (updated[0] === 0) {
-            return res.status(404).json({ message: 'Client non trouvé' });
+        const userClient = await UsersClients.findOne({
+            where: { user_client_id },
+            attributes: [
+                'user_client_id',
+                'mail_user_client',
+                'client_name',
+                'client_last_name',
+                'client_phone_number',
+                'client_address',
+                'client_image_name',
+            ],
+        });
+
+        if (!userClient) {
+            return res.status(404).json({ message: 'Utilisateur-client non trouvé.' });
         }
 
-        const updatedClient = await UsersClients.findOne({ where: { id_user_client: req.user.id_user_client } });
-        res.status(200).json(updatedClient);
-    } catch (error) {        
-        console.error(error);
-        res.status(500).json({ error: error.message });
+        return res.status(200).json(userClient);
+    } catch (error) {
+        console.error('Erreur lors de la récupération de l\'utilisateur-client :', error);
+        return res.status(500).json({ error: 'Une erreur est survenue.' });
     }
+};
+
+/**
+ * Mettre à jour les informations d'un utilisateur-client.
+ * @param {Object} req - Requête Express
+ * @param {Object} res - Réponse Express
+ */
+exports.updateUserClient = async (req, res) => {
+    const { user_client_id } = req.params;
+    const { client_name, client_last_name, client_phone_number, client_address, client_image_name } = req.body;
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+        const [updated] = await UsersClients.update(
+            { client_name, client_last_name, client_phone_number, client_address, client_image_name },
+            { where: { user_client_id } }
+        );
+
+        if (updated === 0) {
+            return res.status(404).json({ message: 'Utilisateur-client non trouvé.' });
+        }
+
+        const updatedUserClient = await UsersClients.findOne({ where: { user_client_id } });
+        return res.status(200).json(updatedUserClient);
+    } catch (error) {
+        console.error('Erreur lors de la mise à jour de l\'utilisateur-client :', error);
+        return res.status(500).json({ error: 'Une erreur est survenue.' });
+    }
+};
+
+/**
+ * Vérifier la validité d'un token JWT.
+ * @param {Object} req - Requête Express
+ * @param {Object} res - Réponse Express
+ */
+exports.verifyToken = async (req, res) => {
+    return res.status(200).json({ message: 'Token valide', user: { id: req.user.id, mail_user_client: req.user.mail_user_client } });
 };
