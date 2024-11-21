@@ -6,9 +6,9 @@ const Roles = require('./Roles');
 const UsersClients = sequelize.define('users_clients', {
     user_client_id: {
         type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4, 
         primaryKey: true,
-        autoIncrement: true,
-        allowNull: false
+        allowNull: false,
     },
     mail_user_client: {
         type: DataTypes.STRING(255),
