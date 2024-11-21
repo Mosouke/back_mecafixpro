@@ -1,7 +1,7 @@
 // @ts-nocheck
 const sequelize = require('../config/config');
 const { DataTypes } = require('sequelize');
-const Clients = require('./Clients');
+const UsersClients = require('./UsersClients');
 
 /**
  * Sequelize model representing the 'Cars' table.
@@ -85,6 +85,7 @@ const Cars = sequelize.define('cars', {
  * Associates the 'Cars' model with the 'Clients' model.
  * A car belongs to a single client, with a foreign key 'fk_client_id' referencing 'client_id' in 'Clients'.
  */
-Cars.belongsTo(Clients, { foreignKey: 'fk_client_id', targetKey: 'client_id' });
+Cars.belongsTo(UsersClients, { foreignKey: 'fk_client_id', targetKey: 'user_client_id' });
+UsersClients.hasMany(Cars, { foreignKey: 'fk_client_id', targetKey: 'user_client_id' });
 
 module.exports = Cars;
