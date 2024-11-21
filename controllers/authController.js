@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const { UsersClients } = require('../Models');
 const { validationResult } = require('express-validator');
 
-const uploadthing = require('uploadthing'); 
+const { createUploadthing } = require('uploadthing');
 const { fileRouter } = require('../middleware/uploadThing');
 
 const JWT_SECRET = process.env.JWT_SECRET;

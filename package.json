@@ -24,7 +24,7 @@
     "mysql2": "^3.11.3",
     "pg": "^8.13.1",
     "sequelize": "^6.37.5",
-    "uploadthing": "^7.3.0"
+    "uploadthing": "^6.0.0"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
