@@ -26,9 +26,17 @@ const Roles = sequelize.define('roles', {
     role_name: {
         type: DataTypes.ENUM('client', 'pro_invité', 'pro', 'admin'), 
         allowNull: false,
-        unique: true, 
     },
-}, {
+},{
+    tableName: 'roles',
+    timestamps: false,
+    indexes: [
+        {
+            unique: true,
+            fields: ['role_name'], // Gérer l'unicité via un index
+        },
+    ], 
+},{
    
     tableName: 'roles',
     timestamps: false, 
