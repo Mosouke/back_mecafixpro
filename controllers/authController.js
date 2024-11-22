@@ -17,7 +17,7 @@ if (!JWT_SECRET) {
  * @param {Object} res - Réponse Express
  */
 exports.register = async (req, res) => {
-    const { mail_user_client, user_client_password, client_name, client_last_name, client_phone_number, client_address } = req.body;
+    const { mail_user_client, password_user_client, client_name, client_last_name, client_phone_number, client_address } = req.body;
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
