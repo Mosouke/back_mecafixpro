@@ -14,6 +14,7 @@ const bodyParser = require('body-parser');
 const app = express();
 
 app.use(express.json());
+
 const allowedOrigins = [
     'https://front-react-mecafixpro.vercel.app', 
     'http://localhost:3000', 
