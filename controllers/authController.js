@@ -19,6 +19,10 @@ if (!JWT_SECRET) {
 exports.register = async (req, res) => {
     const { mail_user_client, password_user_client } = req.body;
 
+    if (!mail_user_client || !password_user_client) {
+        return res.status(400).json({ error: 'L\'email et le mot de passe sont requis.' });
+    }
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
@@ -32,16 +36,16 @@ exports.register = async (req, res) => {
         }
 
         // Hachage du mot de passe
-        const hashedPassword = await bcrypt.hash(password, 12);
+        const hashedPassword = await bcrypt.hash(password_user_client, 12);
 
-        // Création de l'utilisateur
+        // Création de l'utilisateur avec des valeurs par défaut pour les autres champs
         const newUserClient = await UsersClients.create({
             mail_user_client,
             user_client_password: hashedPassword,
-            client_name : 'Nom par défault',
-            client_last_name: 'Nom de famille par défault',
+            client_name : 'Nom par défaut',
+            client_last_name: 'Nom de famille par défaut',
             client_phone_number : '0123456789',
-            client_address : 'Adresse par défault',
+            client_address : 'Adresse par défaut',
         });
 
         // Créer une voiture par défaut associée à l'utilisateur
@@ -85,6 +89,7 @@ exports.register = async (req, res) => {
         return res.status(500).json({ error: 'Une erreur est survenue lors de l\'enregistrement.' });
     }
 };
+
 
 /**
  * Connecter un utilisateur-client existant.
