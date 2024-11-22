@@ -14,11 +14,35 @@ const bodyParser = require('body-parser');
 const app = express();
 
 app.use(express.json());
+const allowedOrigins = [
+    'https://front-react-mecafixpro.vercel.app', 
+    'http://localhost:3000', 
+];
+
 app.use(cors({
-    origin: process.env.BASE_URL, 
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', 
-    credentials: true 
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
 }));
+
+app.options('*', cors({
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+}));
+
 
 app.get("/", (req, res) => {
     res.send("Route test OK v1.2");
