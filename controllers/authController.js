@@ -105,7 +105,7 @@ exports.login = async (req, res) => {
             return res.status(401).json({ message: 'Identifiants invalides.' });
         }
 
-        const isPasswordValid = await bcrypt.compare(password, user.password);
+        const isPasswordValid = await bcrypt.compare(password, user.user_client_password);
         if (!isPasswordValid) {
             return res.status(401).json({ message: 'Identifiants invalides.' });
         }
