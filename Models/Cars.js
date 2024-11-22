@@ -33,7 +33,7 @@ const Cars = sequelize.define('cars', {
      */
     car_marque: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     /**
      * The model of the car.
@@ -42,7 +42,7 @@ const Cars = sequelize.define('cars', {
      */
     car_modele: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     /**
      * The year the car was manufactured.
@@ -52,7 +52,7 @@ const Cars = sequelize.define('cars', {
      */
     car_year: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         validate: {
             min: 1886,
             max: new Date().getFullYear(),
@@ -66,7 +66,7 @@ const Cars = sequelize.define('cars', {
      */
     car_license_plate: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         unique: true,
     },
 
