@@ -24,6 +24,7 @@ const Appointments = sequelize.define('appointments', {
      */
     appt_id: {
         type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4, 
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
@@ -62,6 +63,7 @@ const Appointments = sequelize.define('appointments', {
      */
     fk_user_client_id: {
         type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4, 
         allowNull: false,
     },
     /**
