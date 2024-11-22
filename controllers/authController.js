@@ -38,10 +38,10 @@ exports.register = async (req, res) => {
         const newUserClient = await UsersClients.create({
             mail_user_client,
             user_client_password: hashedPassword,
-            client_name,
-            client_last_name,
-            client_phone_number,
-            client_address,
+            client_name : 'Nom par défault',
+            client_last_name: 'Nom de famille par défault',
+            client_phone_number : '0123456789',
+            client_address : 'Adresse par défault',
         });
 
         // Créer une voiture par défaut associée à l'utilisateur
