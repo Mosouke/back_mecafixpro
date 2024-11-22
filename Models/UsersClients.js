@@ -24,11 +24,11 @@ const UsersClients = sequelize.define('users_clients', {
     },
     user_client_name: {
         type: DataTypes.STRING(100),
-        allowNull: false
+        allowNull: true
     },
     user_client_last_name: {
         type: DataTypes.STRING(100),
-        allowNull: false
+        allowNull: true
     },
     user_client_phone_number: {
         type: DataTypes.STRING(15),
