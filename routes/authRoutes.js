@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
 const { authMiddleware, adminMiddleware } = require('../middleware/auth');
-const { validateUserCreation, validateUserLogin, validateUserClientUpdate } = require('../middleware/validator');
+const { validateUserCreation, validateUserLogin, validateUserClientUpdate, validateUserClientCreation } = require('../middleware/validator');
 
 
 
@@ -16,7 +16,7 @@ const { validateUserCreation, validateUserLogin, validateUserClientUpdate } = re
  * @returns {Object} 400 - Bad request if validation fails.
  * @returns {Object} 500 - Internal server error.
  */
-router.post('/register', validateUserCreation, authController.register);
+router.post('/register', validateUserCreation,validateUserClientCreation, authController.register);
 
 /**
  * @route POST /login

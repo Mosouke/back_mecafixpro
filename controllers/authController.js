@@ -1,7 +1,7 @@
 // @ts-nocheck
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { UsersClients } = require('../Models');
+const { UsersClients, Cars } = require('../Models');
 const { validationResult } = require('express-validator');
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -25,12 +25,16 @@ exports.register = async (req, res) => {
     }
 
     try {
+        // Vérification si l'utilisateur existe déjà
         const userExists = await UsersClients.findOne({ where: { mail_user_client } });
         if (userExists) {
             return res.status(400).json({ error: 'Cet email est déjà utilisé.' });
         }
 
+        // Hachage du mot de passe
         const hashedPassword = await bcrypt.hash(password, 12);
+
+        // Création de l'utilisateur
         const newUserClient = await UsersClients.create({
             mail_user_client,
             password: hashedPassword,
@@ -38,16 +42,44 @@ exports.register = async (req, res) => {
             client_last_name,
             client_phone_number,
             client_address,
-           
         });
 
+        // Créer une voiture par défaut associée à l'utilisateur
+        const newCar = await Cars.create({
+            user_client_id: newUserClient.user_client_id, 
+            car_brand: 'Marque par défaut', 
+            car_model: 'Modèle par défaut',
+            car_year: 2020, 
+            car_plate: 'AA-123-BB',
+        });
+
+        // Générer un token JWT
         const token = jwt.sign(
             { id: newUserClient.user_client_id, mail_user_client: newUserClient.mail_user_client },
             JWT_SECRET,
             { expiresIn: TOKEN_EXPIRATION }
         );
 
-        return res.status(201).json({ token, user: newUserClient });
+        // Répondre avec le token et les données de l'utilisateur
+        return res.status(201).json({
+            token,
+            user_client: {
+                id: newUserClient.user_client_id,
+                mail_user_client: newUserClient.mail_user_client,
+                client_name: newUserClient.client_name,
+                client_last_name: newUserClient.client_last_name,
+                client_phone_number: newUserClient.client_phone_number,
+                client_address: newUserClient.client_address,
+            },
+            car: {
+                id: newCar.car_id,
+                car_brand: newCar.car_brand,
+                car_model: newCar.car_model,
+                car_year: newCar.car_year,
+                car_plate: newCar.car_plate,
+            }
+        });
+
     } catch (error) {
         console.error('Erreur lors de l\'enregistrement :', error);
         return res.status(500).json({ error: 'Une erreur est survenue lors de l\'enregistrement.' });

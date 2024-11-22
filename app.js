@@ -1,6 +1,6 @@
 // @ts-nocheck
 const express = require('express');
-const authRoutes = require('./routes/authRoutes'); // Auth routes only now, since clientRoutes is merged
+const authRoutes = require('./routes/authRoutes'); 
 const carRoutes = require('./routes/carRoutes');
 const garageRoutes = require('./routes/garageRoutes');
 const serviceRoutes = require('./routes/serviceRoutes');
@@ -52,7 +52,7 @@ app.get("/", (req, res) => {
  * Route definitions.
  * Now all client-related routes are handled by authRoutes.
  */
-app.use('/api/auth', authRoutes); // Authentication and user-related routes (sign-up, login, profile, etc.)
+app.use('/api/auth', authRoutes); 
 app.use('/api/car', carRoutes);
 app.use('/api/garage', garageRoutes);
 app.use('/api/service', serviceRoutes);
