@@ -39,7 +39,8 @@ const UsersClients = sequelize.define('users_clients', {
         allowNull: true
     },
     role_id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         references: {
             model: Roles, 
             key: 'role_id'
