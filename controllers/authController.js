@@ -254,71 +254,43 @@ exports.updateUserClient = async (req, res) => {
  * @param {Object} res - Réponse Express
  */
 exports.verifyToken = async (req, res) => {
-    // Récupérer le token du header Authorization
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        return res.status(401).json({
-            success: false,
-            message: "Token d'authentification manquant ou invalide.",
-        });
-    }
-
-    const token = authHeader.split(' ')[1];
+    const token = req.headers['authorization']?.split(' ')[1];
 
     if (!token) {
-        return res.status(401).json({
-            success: false,
-            message: "Token corrompu ou vide.",
-        });
+        return res.status(401).json({ message: 'Token manquant ou invalide' });
     }
 
     try {
-        // Décoder le token pour obtenir l'id de l'utilisateur
         const decoded = jwt.verify(token, JWT_SECRET);
 
-        // Récupérer l'utilisateur à partir de la base de données
-        const user = await UsersClients.findOne({
-            where: { user_client_id: decoded.id },
-            attributes: ['user_client_id', 'mail_user_client'],
-        });
+        // Vérification des données de l'utilisateur
+        const user = await UsersClients.findByPk(decoded.id);
 
         if (!user) {
-            return res.status(401).json({
-                success: false,
-                message: "Utilisateur non trouvé.",
-            });
+            return res.status(401).json({ message: 'Utilisateur non trouvé.' });
         }
 
-        // Renvoyer un message de succès avec les informations de l'utilisateur
         return res.status(200).json({
-            success: true,
             message: 'Token valide',
             user_client: {
                 id: user.user_client_id,
                 mail_user_client: user.mail_user_client,
             }
         });
-
     } catch (err) {
         if (err.name === 'TokenExpiredError') {
             return res.status(401).json({
-                success: false,
-                message: "Le token a expiré. Veuillez vous reconnecter.",
+                message: 'Le token a expiré. Veuillez vous reconnecter.',
             });
         }
 
         if (err.name === 'JsonWebTokenError') {
             return res.status(401).json({
-                success: false,
-                message: "Le token est invalide. Vérifiez vos informations.",
+                message: 'Le token est invalide.',
             });
         }
 
-        console.error("Erreur inattendue lors de la vérification du token :", err);
-        return res.status(500).json({
-            success: false,
-            message: "Erreur serveur lors de la vérification du token.",
-        });
+        console.error('Erreur serveur:', err);
+        return res.status(500).json({ message: 'Erreur serveur.' });
     }
 };
