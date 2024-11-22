@@ -16,7 +16,7 @@ const { validateUserCreation, validateUserLogin, validateUserClientUpdate, valid
  * @returns {Object} 400 - Bad request if validation fails.
  * @returns {Object} 500 - Internal server error.
  */
-router.post('/register', validateUserCreation,validateUserClientCreation, authController.register);
+router.post('/register', validateUserCreation, authController.register);
 
 /**
  * @route POST /login
