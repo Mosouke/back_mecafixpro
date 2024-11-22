@@ -57,11 +57,11 @@ exports.register = async (req, res) => {
 
         // Créer une voiture par défaut associée à l'utilisateur
         const newCar = await Cars.create({
-            user_client_id: newUserClient.user_client_id,
-            car_brand: 'Marque par défaut',
-            car_model: 'Modèle par défaut',
-            car_year: 2020,
-            car_plate: 'AA-123-BB',
+            car_marque: 'Marque par défaut', 
+            car_modele: 'Modèle par défaut',
+            car_year: 2020, 
+            car_license_plate: 'AA-123-BB', 
+            fk_user_client_id: newUserClient.user_client_id,
         });
 
         // Générer un token JWT
