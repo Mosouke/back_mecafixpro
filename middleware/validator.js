@@ -5,7 +5,7 @@ console.log("Fichier de validation chargé");
 /**
  * Validation réutilisable pour les emails.
  */
-const validateEmail = check('user_client_mail')
+const validateEmail = check('mail_user_client')
     .isEmail()
     .withMessage('Email invalide');
 
