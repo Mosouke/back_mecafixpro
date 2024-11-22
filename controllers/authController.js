@@ -41,7 +41,7 @@ exports.register = async (req, res) => {
         // Création de l'utilisateur avec des valeurs par défaut pour les autres champs
         const newUserClient = await UsersClients.create({
             mail_user_client,
-            user_client_password: hashedPassword,
+            password_user_client: hashedPassword,
             client_name : 'Nom par défaut',
             client_last_name: 'Nom de famille par défaut',
             client_phone_number : '0123456789',
@@ -110,7 +110,7 @@ exports.login = async (req, res) => {
             return res.status(401).json({ message: 'Identifiants invalides.' });
         }
 
-        const isPasswordValid = await bcrypt.compare(password, user.user_client_password);
+        const isPasswordValid = await bcrypt.compare(password, user.password_user_client);
         if (!isPasswordValid) {
             return res.status(401).json({ message: 'Identifiants invalides.' });
         }
