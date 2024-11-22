@@ -8,10 +8,11 @@ const {
     DB_PASSWORD,
     DB_HOST,
     DB_DIALECT,
+    BASE_URL,
 } = process.env;
 
 // Vérifier que toutes les variables d'environnement sont définies
-if (!DB_NAME || !DB_USER || !DB_PASSWORD || !DB_HOST || !DB_DIALECT) {
+if (!DB_NAME || !DB_USER || !DB_PASSWORD || !DB_HOST || !DB_DIALECT || !BASE_URL) {
     throw new Error("Une ou plusieurs variables d'environnement de base de données sont manquantes.");
 }
 
