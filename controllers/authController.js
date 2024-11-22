@@ -107,34 +107,55 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
     const { mail_user_client, password_user_client } = req.body;
 
+    console.log('Requête de connexion reçue avec :', req.body);
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+        console.log('Erreurs de validation :', errors.array());
         return res.status(400).json({ errors: errors.array() });
     }
 
     try {
+        // Vérifier l'existence de l'utilisateur
         const user = await UsersClients.findOne({ where: { mail_user_client } });
         if (!user) {
+            console.log('Utilisateur non trouvé pour l\'email :', mail_user_client);
             return res.status(401).json({ message: 'Identifiants invalides.' });
         }
 
+        // Comparer le mot de passe
         const isPasswordValid = await bcrypt.compare(password_user_client, user.password_user_client);
         if (!isPasswordValid) {
+            console.log('Mot de passe incorrect pour l\'utilisateur :', mail_user_client);
             return res.status(401).json({ message: 'Identifiants invalides.' });
         }
 
+        // Générer un JWT
         const token = jwt.sign(
             { id: user.user_client_id, mail_user_client: user.mail_user_client },
             JWT_SECRET,
             { expiresIn: TOKEN_EXPIRATION }
         );
 
-        return res.status(200).json({ token, user });
+        console.log('Connexion réussie pour l\'utilisateur :', mail_user_client);
+
+        // Retourner la réponse
+        return res.status(200).json({
+            token,
+            user: {
+                id: user.user_client_id,
+                email: user.mail_user_client,
+                name: user.user_client_name,
+                lastName: user.user_client_last_name,
+            },
+        });
+
     } catch (error) {
         console.error('Erreur lors de la connexion :', error);
         return res.status(500).json({ error: 'Une erreur est survenue lors de la connexion.' });
     }
 };
+
 
 /**
  * Obtenir tous les utilisateurs-clients.
