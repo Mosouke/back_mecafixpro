@@ -233,5 +233,5 @@ exports.updateUserClient = async (req, res) => {
  * @param {Object} res - Réponse Express
  */
 exports.verifyToken = async (req, res) => {
-    return res.status(200).json({ message: 'Token valide', user_client: { id: req.user_client.user_client_id, mail_user_client: req.user_client.mail_user_client } });
+    return res.status(200).json({ message: 'Token valide', user_client: { id: user.user_client_id, mail_user_client: user.mail_user_client } });
 };
