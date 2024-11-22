@@ -12,7 +12,7 @@ const validateEmail = check('user_client_mail')
 /**
  * Validation réutilisable pour les mots de passe.
  */
-const validatePassword = check('passworduser_client_password')
+const validatePassword = check('user_client_password')
     .isLength({ min: 4, max: 100 })
     .withMessage('Le mot de passe doit comporter entre 4 et 100 caractères');
 
