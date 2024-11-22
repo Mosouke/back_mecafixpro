@@ -105,7 +105,7 @@ exports.register = async (req, res) => {
  * @param {Object} res - Réponse Express
  */
 exports.login = async (req, res) => {
-    const { mail_user_client, password } = req.body;
+    const { mail_user_client, password_user_client } = req.body;
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -118,7 +118,7 @@ exports.login = async (req, res) => {
             return res.status(401).json({ message: 'Identifiants invalides.' });
         }
 
-        const isPasswordValid = await bcrypt.compare(password, user.password_user_client);
+        const isPasswordValid = await bcrypt.compare(password_user_client, user.password_user_client);
         if (!isPasswordValid) {
             return res.status(401).json({ message: 'Identifiants invalides.' });
         }
