@@ -15,9 +15,9 @@ const Roles = sequelize.define('roles', {
      */
     role_id: {
         type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         allowNull: false,
         primaryKey: true,
-        autoIncrement: true,
     },
     /**
      * The name of the role.
