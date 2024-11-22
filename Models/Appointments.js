@@ -26,7 +26,6 @@ const Appointments = sequelize.define('appointments', {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4, 
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
     },
     /**
@@ -92,6 +91,10 @@ const Appointments = sequelize.define('appointments', {
     fk_specific_service_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        references: {
+            model: 'specificServices',
+            key: 'specificService_id',
+        },
     },
 });
 
