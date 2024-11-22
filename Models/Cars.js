@@ -77,6 +77,7 @@ const Cars = sequelize.define('cars', {
      */
     fk_user_client_id: {
         type: DataTypes.UUID,
+        allowNull: false,
         references: {
             model: UsersClients,
             key: 'user_client_id',
