@@ -35,6 +35,12 @@ exports.register = async (req, res) => {
             return res.status(400).json({ error: 'Cet email est déjà utilisé.' });
         }
 
+        // Récupérer le rôle "client" depuis la table des rôles
+        const clientRole = await Roles.findOne({ where: { role_name: 'client' } });
+        if (!clientRole) {
+            return res.status(500).json({ error: 'Le rôle "client" est introuvable dans la base de données.' });
+        }
+
         // Hachage du mot de passe
         const hashedPassword = await bcrypt.hash(password_user_client, 12);
 
@@ -42,18 +48,19 @@ exports.register = async (req, res) => {
         const newUserClient = await UsersClients.create({
             mail_user_client,
             password_user_client: hashedPassword,
-            client_name : 'Nom par défaut',
+            client_name: 'Nom par défaut',
             client_last_name: 'Nom de famille par défaut',
-            client_phone_number : '0123456789',
-            client_address : 'Adresse par défaut',
+            client_phone_number: '0123456789',
+            client_address: 'Adresse par défaut',
+            role_id: clientRole.role_id, // Associer le rôle "client"
         });
 
         // Créer une voiture par défaut associée à l'utilisateur
         const newCar = await Cars.create({
-            user_client_id: newUserClient.user_client_id, 
-            car_brand: 'Marque par défaut', 
+            user_client_id: newUserClient.user_client_id,
+            car_brand: 'Marque par défaut',
             car_model: 'Modèle par défaut',
-            car_year: 2020, 
+            car_year: 2020,
             car_plate: 'AA-123-BB',
         });
 
@@ -89,6 +96,7 @@ exports.register = async (req, res) => {
         return res.status(500).json({ error: 'Une erreur est survenue lors de l\'enregistrement.' });
     }
 };
+
 
 
 /**
