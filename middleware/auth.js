@@ -36,7 +36,8 @@ const authMiddleware = async (req, res, next) => {
 
         const user = await UsersClients.findByPk(decoded.user_client_id, {
             // include: [{ model: Roles, as: 'role_name', attributes: ['client'] }],
-            attributes: ['user_client_id', 'mail_user_client', 'fk_role_id'],
+            // attributes: ['user_client_id', 'mail_user_client', 'fk_role_id'],
+            attributes: ['user_client_id', 'mail_user_client'],
         });
 
         if (!user) {
