@@ -12,10 +12,10 @@ exports.getAllUsersClients = async (req, res) => {
             attributes: [
                 'user_client_id',
                 'mail_user_client',
-                'client_name',
-                'client_last_name',
-                'client_phone_number',
-                'client_address',
+                'user_client_name',
+                'user_client_last_name',
+                'user_client_phone_number',
+                'user_client_address',
             ],
         });
         return res.status(200).json(usersClients);
@@ -39,10 +39,10 @@ exports.getUserClientById = async (req, res) => {
             attributes: [
                 'user_client_id',
                 'mail_user_client',
-                'client_name',
-                'client_last_name',
-                'client_phone_number',
-                'client_address',
+                'user_client_name',
+                'user_client_last_name',
+                'user_client_phone_number',
+                'user_client_address',
             ],
         });
 
@@ -64,7 +64,7 @@ exports.getUserClientById = async (req, res) => {
  */
 exports.updateUserClient = async (req, res) => {
     const { user_client_id } = req.params;
-    const { client_name, client_last_name, client_phone_number, client_address } = req.body;
+    const { user_client_name, user_client_last_name, user_client_phone_number, user_client_address } = req.body;
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -76,7 +76,7 @@ exports.updateUserClient = async (req, res) => {
         const client_image_url = req.body.files?.[0]?.url || null;
 
         const [updated] = await UsersClients.update(
-            { client_name, client_last_name, client_phone_number, client_address },
+            { user_client_name, user_client_last_name, user_client_phone_number, user_client_address },
             { where: { user_client_id } }
         );
 
