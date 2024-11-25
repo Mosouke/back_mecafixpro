@@ -252,6 +252,7 @@ exports.updateUserClient = async (req, res) => {
  * Vérifier la validité d'un token JWT.
  */
 exports.verifyToken = (req, res) => {
+    console.log(req.user);
     if (!req.user) {
         return res.status(401).json({ message: 'Utilisateur non authentifié.' });
     }

@@ -32,12 +32,10 @@ const authMiddleware = async (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
-        console.log("Payload JWT décodé :", decoded); 
 
         const user = await UsersClients.findByPk(decoded.user_client_id, {
-            // include: [{ model: Roles, as: 'role_name', attributes: ['client'] }],
-            // attributes: ['user_client_id', 'mail_user_client', 'fk_role_id'],
-            attributes: ['user_client_id', 'mail_user_client'],
+            include: [{ model: Roles, as: 'role_name', attributes: ['client'] }],
+            attributes: ['user_client_id', 'mail_user_client', 'fk_role_id'],
         });
 
         if (!user) {
@@ -50,7 +48,7 @@ const authMiddleware = async (req, res, next) => {
         req.user = {
             user_client_id: user.user_client_id,
             mail_user_client: user.mail_user_client,
-            // role_name: user.role ? user.role.role_name : null,
+            role_name: user.role ? user.role.role_name : null,
         };
 
         
