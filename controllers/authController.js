@@ -48,10 +48,10 @@ exports.register = async (req, res) => {
         const newUserClient = await UsersClients.create({
             mail_user_client,
             password_user_client: hashedPassword,
-            client_name: 'Nom par défaut',
-            client_last_name: 'Nom de famille par défaut',
-            client_phone_number: '0123456789',
-            client_address: 'Adresse par défaut',
+            userclient_name: 'Nom par défaut',
+            user_client_last_name: 'Nom de famille par défaut',
+            user_client_phone_number: '0123456789',
+            user_client_address: 'Adresse par défaut',
             role_id: clientRole.role_id, // Associer le rôle "client"
         });
 
@@ -107,11 +107,11 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
     const { mail_user_client, password_user_client } = req.body;
 
-    console.log('Requête de connexion reçue avec :', req.body);
+    ('Requête de connexion reçue avec :', req.body);
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        console.log('Erreurs de validation :', errors.array());
+        ('Erreurs de validation :', errors.array());
         return res.status(400).json({ errors: errors.array() });
     }
 
@@ -119,14 +119,14 @@ exports.login = async (req, res) => {
         // Vérifier l'existence de l'utilisateur
         const user = await UsersClients.findOne({ where: { mail_user_client } });
         if (!user) {
-            console.log('Utilisateur non trouvé pour l\'email :', mail_user_client);
+            ('Utilisateur non trouvé pour l\'email :', mail_user_client);
             return res.status(401).json({ message: 'Identifiants invalides.' });
         }
 
         // Comparer le mot de passe
         const isPasswordValid = await bcrypt.compare(password_user_client, user.password_user_client);
         if (!isPasswordValid) {
-            console.log('Mot de passe incorrect pour l\'utilisateur :', mail_user_client);
+            ('Mot de passe incorrect pour l\'utilisateur :', mail_user_client);
             return res.status(401).json({ message: 'Identifiants invalides.' });
         }
 
@@ -137,7 +137,7 @@ exports.login = async (req, res) => {
             { expiresIn: TOKEN_EXPIRATION }
         );
 
-        console.log('Connexion réussie pour l\'utilisateur :', mail_user_client);
+        ('Connexion réussie pour l\'utilisateur :', mail_user_client);
 
         // Retourner la réponse
         return res.status(200).json({
@@ -252,7 +252,7 @@ exports.updateUserClient = async (req, res) => {
  * Vérifier la validité d'un token JWT.
  */
 exports.verifyToken = (req, res) => {
-    console.log(req.user);
+    (req.user);
     if (!req.user) {
         return res.status(401).json({ message: 'Utilisateur non authentifié.' });
     }
