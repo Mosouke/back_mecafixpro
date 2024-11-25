@@ -1,9 +1,9 @@
 // @ts-nocheck
 const express = require('express');
 const router = express.Router();
-const clientController = require('../controllers/clientController');
-const { authMiddleware, adminMiddleware } = require('../middleware/auth');
-const { validateUserClientUpdate } = require('../middleware/validator');
+const clientController = require('../controllers/ClientController');
+const { authMiddleware } = require('../middleware/auth');
+// const { validateUserClientUpdate } = require('../middleware/validator');
 
 /**
  * @route GET /user-client-profile
@@ -13,7 +13,7 @@ const { validateUserClientUpdate } = require('../middleware/validator');
  * @returns {Object} 404 - User client not found.
  * @returns {Object} 500 - Internal server error.
  */
-router.get('/user-client-profile', authMiddleware, clientController.getUserClientById);
+router.get('/profile', authMiddleware, clientController.getUserClientById);
 
 // /**
 //  * @route PUT /user-client/update/{user_client_id}
