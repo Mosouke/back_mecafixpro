@@ -55,7 +55,7 @@ app.get("/", (req, res) => {
  * Now all client-related routes are handled by authRoutes.
  */
 app.use('/api/auth', authRoutes);
-app.use('/api/Client', clientRoutes);
+app.use('/api/client', clientRoutes);
 app.use('/api/car', carRoutes);
 app.use('/api/garage', garageRoutes);
 app.use('/api/service', serviceRoutes);
