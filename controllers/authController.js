@@ -52,7 +52,7 @@ exports.register = async (req, res) => {
             user_client_last_name: 'Nom de famille par défaut',
             user_client_phone_number: '0123456789',
             user_client_address: 'Adresse par défaut',
-            role_id: clientRole.role_id, 
+            role_id: clientRole.role_id,
         });
 
         // Créer une voiture par défaut associée à l'utilisateur
@@ -256,7 +256,6 @@ exports.verifyToken = (req, res) => {
     if (!req.user) {
         return res.status(401).json({ message: 'Utilisateur non authentifié.' });
     }
-
     return res.status(200).json({
         message: 'Token valide',
         user_client_id: req.user,
