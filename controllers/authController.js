@@ -250,52 +250,6 @@ exports.updateUserClient = async (req, res) => {
 
 /**
  * Vérifier la validité d'un token JWT.
- * @param {Object} req - Requête Express
- * @param {Object} res - Réponse Express
- */
-exports.verifyToken = async (req, res) => {
-    const token = req.headers['authorization']?.split(' ')[1];
-
-    if (!token) {
-        return res.status(401).json({ message: 'Token manquant ou invalide' });
-    }
-
-    try {
-        const decoded = jwt.verify(token, JWT_SECRET);
-
-        // Vérification des données de l'utilisateur
-        const user = await UsersClients.findByPk(decoded.id);
-
-        if (!user) {
-            return res.status(401).json({ message: 'Utilisateur non trouvé.' });
-        }
-
-        return res.status(200).json({
-            message: 'Token valide',
-            user_client: {
-                user_client_id: user.user_client_id,
-                mail_user_client: user.mail_user_client,
-            }
-        });
-    } catch (err) {
-        if (err.name === 'TokenExpiredError') {
-            return res.status(401).json({
-                message: 'Le token a expiré. Veuillez vous reconnecter.',
-            });
-        }
-
-        if (err.name === 'JsonWebTokenError') {
-            return res.status(401).json({
-                message: 'Le token est invalide.',
-            });
-        }
-
-        console.error('Erreur serveur:', err);
-        return res.status(500).json({ message: 'Erreur serveur.' });
-    }
-};
-/**
- * Vérifier la validité d'un token JWT.
  */
 exports.verifyToken = (req, res) => {
     if (!req.user) {
