@@ -52,7 +52,7 @@ exports.register = async (req, res) => {
             user_client_last_name: 'Nom de famille par défaut',
             user_client_phone_number: '0123456789',
             user_client_address: 'Adresse par défaut',
-            role_id: clientRole.role_id, // Associer le rôle "client"
+            role_id: clientRole.role_id, 
         });
 
         // Créer une voiture par défaut associée à l'utilisateur
