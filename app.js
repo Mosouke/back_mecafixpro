@@ -6,6 +6,7 @@ const garageRoutes = require('./routes/garageRoutes');
 const serviceRoutes = require('./routes/serviceRoutes');
 const specificServiceRoutes = require('./routes/specificServicesRoutes');
 const appointmentRoutes = require('./routes/appointmentRoutes');
+const clientRoutes = require('./routes/clientRoutes');
 const cors = require('cors');
 const { sequelize, Roles } = require('./Models');
 const { body } = require('express-validator');
@@ -53,7 +54,8 @@ app.get("/", (req, res) => {
  * Route definitions.
  * Now all client-related routes are handled by authRoutes.
  */
-app.use('/api/auth', authRoutes); 
+app.use('/api/auth', authRoutes);
+app.use('/api/Client', clientRoutes);
 app.use('/api/car', carRoutes);
 app.use('/api/garage', garageRoutes);
 app.use('/api/service', serviceRoutes);

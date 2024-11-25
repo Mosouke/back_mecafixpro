@@ -1,5 +1,5 @@
 // @ts-nocheck
-const { Cars, Clients } = require('../Models');
+const { Cars, UsersClients } = require('../Models');
 
 /**
  * @module controllers/carController
@@ -60,10 +60,10 @@ exports.createCar = async (req, res) => {
         
         if (!car_marque || !car_modele || !car_year || !car_license_plate || !client_id) {
             console.error('Missing required fields');
-            return res.status(400).json({ message: 'Missing required fields' });
+            return res.status(400).json({ message: 'Missing required fields', errors: errors.array() });
         }
 
-        const client = await Clients.findOne({ where: { client_id } });
+        const client = await UsersClients.findOne({ where: { user_client_id } });
         if (!client) {
             return res.status(404).json({ message: 'Client not found' });
         }
@@ -73,7 +73,7 @@ exports.createCar = async (req, res) => {
             car_modele,
             car_year,
             car_license_plate,
-            fk_client_id: client.client_id 
+            fk_client_id: client.user_client_id 
         });
 
         res.status(201).json(car);
@@ -93,7 +93,7 @@ exports.createCar = async (req, res) => {
  */
 exports.updateCar = async (req, res) => {
     try {
-        const { car_id, client_id } = req.params;  
+        const { car_id, user_client_id } = req.params;
         const { car_marque, car_modele, car_year, car_license_plate } = req.body;
 
         const client = await Clients.findOne({ where: { client_id } });
@@ -102,7 +102,7 @@ exports.updateCar = async (req, res) => {
         }
 
         const [updated] = await Cars.update(
-            { car_marque, car_modele, car_year,car_license_plate, fk_client_id: client_id }, 
+            { car_marque, car_modele, car_year,car_license_plate, fk_user_client_id: user_client_id },
             { where: { car_id } }
         );
 
