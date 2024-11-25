@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const clientController = require('../controllers/clientController');
 const { authMiddleware, adminMiddleware } = require('../middleware/auth');
-// const { validateUserClientUpdate } = require('../middleware/validator');
+const { validateUserClientUpdate } = require('../middleware/validator');
 
 // /**
 //  * @route GET /user-client-profile
