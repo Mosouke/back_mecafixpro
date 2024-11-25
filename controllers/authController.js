@@ -48,7 +48,7 @@ exports.register = async (req, res) => {
         const newUserClient = await UsersClients.create({
             mail_user_client,
             password_user_client: hashedPassword,
-            userclient_name: 'Nom par défaut',
+            user_client_name: 'Nom par défaut',
             user_client_last_name: 'Nom de famille par défaut',
             user_client_phone_number: '0123456789',
             user_client_address: 'Adresse par défaut',
