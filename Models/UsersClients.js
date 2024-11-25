@@ -54,7 +54,7 @@ const UsersClients = sequelize.define('users_clients', {
 });
 
 // Relation avec la table des rôles
-UsersClients.belongsTo(Roles, { foreignKey: 'role_id', as: 'clientRole' });
+UsersClients.belongsTo(Roles, { foreignKey: 'role_id', as: 'Role' });
 Roles.hasMany(UsersClients, { foreignKey: 'role_id', as: 'users_clients' });
 
 UsersClients.beforeCreate(async (userClient) => {
