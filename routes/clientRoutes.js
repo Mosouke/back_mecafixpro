@@ -5,14 +5,14 @@ const clientController = require('../controllers/clientController');
 const { authMiddleware, adminMiddleware } = require('../middleware/auth');
 const { validateUserClientUpdate } = require('../middleware/validator');
 
-// /**
-//  * @route GET /user-client-profile
-//  * @group User Client - Operations regarding the authenticated user client
-//  * @description Retrieve the authenticated user client's information.
-//  * @returns {Object} 200 - User client object.
-//  * @returns {Object} 404 - User client not found.
-//  * @returns {Object} 500 - Internal server error.
-//  */
+/**
+ * @route GET /user-client-profile
+ * @group User Client - Operations regarding the authenticated user client
+ * @description Retrieve the authenticated user client's information.
+ * @returns {Object} 200 - User client object.
+ * @returns {Object} 404 - User client not found.
+ * @returns {Object} 500 - Internal server error.
+ */
 router.get('/user-client-profile', authMiddleware, clientController.getUserClientById);
 
 // /**
