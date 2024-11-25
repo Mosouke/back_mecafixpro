@@ -294,3 +294,16 @@ exports.verifyToken = async (req, res) => {
         return res.status(500).json({ message: 'Erreur serveur.' });
     }
 };
+/**
+ * Vérifier la validité d'un token JWT.
+ */
+exports.verifyToken = (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ message: 'Utilisateur non authentifié.' });
+    }
+
+    return res.status(200).json({
+        message: 'Token valide',
+        user_client: req.user,
+    });
+};

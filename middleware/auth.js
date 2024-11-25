@@ -1,6 +1,6 @@
 // @ts-nocheck
 const jwt = require('jsonwebtoken');
-const { UsersClients, Roles } = require('../Models'); 
+const { UsersClients, Roles } = require('../Models');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -10,9 +10,6 @@ if (!JWT_SECRET) {
 
 /**
  * Middleware pour authentifier les utilisateurs basé sur le token JWT.
- * @param {import('express').Request} req - L'objet requête.
- * @param {import('express').Response} res - L'objet réponse.
- * @param {import('express').NextFunction} next - La fonction suivante dans la chaîne de middleware.
  */
 const authMiddleware = async (req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -80,9 +77,6 @@ const authMiddleware = async (req, res, next) => {
 
 /**
  * Middleware pour vérifier si l'utilisateur authentifié a des privilèges d'administrateur.
- * @param {import('express').Request} req - L'objet requête.
- * @param {import('express').Response} res - L'objet réponse.
- * @param {import('express').NextFunction} next - La fonction suivante dans la chaîne de middleware.
  */
 const adminMiddleware = async (req, res, next) => {
     if (!req.user || !req.user.role_name) {
