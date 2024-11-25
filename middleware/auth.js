@@ -33,9 +33,11 @@ const authMiddleware = async (req, res, next) => {
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
 
-        const user = await UsersClients.findByPk(decoded.user_client_id, {
-            include: [{ model: Roles, as: 'role_name', attributes: ['client'] }],
-            attributes: ['user_client_id', 'mail_user_client', 'fk_role_id'],
+        console.log(decoded);
+
+        const user = await UsersClients.findByPk(decoded.id, {
+            // include: [{ model: Roles, as: 'role_name', attributes: ['client'] }],
+            // attributes: ['user_client_id', 'mail_user_client', 'fk_role_id'],
         });
 
         if (!user) {
