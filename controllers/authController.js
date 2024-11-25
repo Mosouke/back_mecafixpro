@@ -258,6 +258,6 @@ exports.verifyToken = (req, res) => {
 
     return res.status(200).json({
         message: 'Token valide',
-        user_client: req.user,
+        user_client_id: req.user,
     });
 };
