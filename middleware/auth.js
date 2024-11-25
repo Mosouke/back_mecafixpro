@@ -33,26 +33,24 @@ const authMiddleware = async (req, res, next) => {
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
 
-        console.log(decoded.user_client_id.user_client_id);
-
-        const user = await UsersClients.findByPk(decoded.user_client_id.user_client_id, {
-            // include: [{ model: Roles, as: 'role_name', attributes: ['client'] }],
+        const user = await UsersClients.findByPk(decoded.id, {
+            // include: [{ model: Roles, as: 'role', attributes: ['client'] }],
             // attributes: ['user_client_id', 'mail_user_client', 'fk_role_id'],
         });
 
+        
         if (!user) {
             return res.status(401).json({
                 success: false,
                 message: "Utilisateur non trouvé.",
             });
         }
-
+        
         req.user = {
             user_client_id: user.user_client_id,
             mail_user_client: user.mail_user_client,
             role_name: user.role ? user.role.role_name : null,
         };
-
         
 
         next();
