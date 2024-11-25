@@ -273,7 +273,7 @@ exports.verifyToken = async (req, res) => {
         return res.status(200).json({
             message: 'Token valide',
             user_client: {
-                id: user.user_client_id,
+                user_client_id: user.user_client_id,
                 mail_user_client: user.mail_user_client,
             }
         });
