@@ -51,7 +51,7 @@ const validateUserLogin = [
  * Validations pour la mise à jour d'un utilisateur (sans valider le mot de passe).
  */
 const validateUserUpdate = [
-    validateEmail,  // Validation de l'email uniquement pour la mise à jour
+    validateEmail, 
     handleValidationErrors
 ];
 
