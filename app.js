@@ -47,7 +47,7 @@ app.options('*', cors({
 
 
 app.get("/", (req, res) => {
-    res.send("Route test OK v1.4");
+    res.send("Route test OK v1.5");
 });
 
 /**
