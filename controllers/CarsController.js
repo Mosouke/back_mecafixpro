@@ -2,16 +2,7 @@
 const { Cars, UsersClients } = require('../Models');
 
 /**
- * @module controllers/carController
- */
-
-/**
  * Get all cars.
- * 
- * @function getCars
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- * @returns {Object} res - Response object containing all cars or an error message
  */
 exports.getAllCars = async (req, res) => {
     try {
@@ -25,15 +16,10 @@ exports.getAllCars = async (req, res) => {
 
 /**
  * Get a specific car by ID.
- * 
- * @function getCar
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- * @returns {Object} res - Response object containing the car or an error message
  */
 exports.getCar = async (req, res) => {
     try {
-        const { car_id } = req.car;
+        const { car_id } = req.params;  // Change here to use req.params
         const car = await Cars.findOne({ where: { car_id } });
         if (!car) {
             return res.status(404).json({ message: 'Car not found' });
@@ -47,23 +33,18 @@ exports.getCar = async (req, res) => {
 
 /**
  * Create a new car associated with a client.
- * 
- * @function createCar
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- * @returns {Object} res - Response object containing the created car or an error message
  */
 exports.createCar = async (req, res) => {
     try {
         const { car_marque, car_modele, car_year, car_license_plate } = req.body;
-        const { client_id } = req.params; 
-        
+        const { client_id } = req.params;
+
         if (!car_marque || !car_modele || !car_year || !car_license_plate || !client_id) {
             console.error('Missing required fields');
-            return res.status(400).json({ message: 'Missing required fields', errors: errors.array() });
+            return res.status(400).json({ message: 'Missing required fields' });
         }
 
-        const client = await UsersClients.findOne({ where: { user_client_id } });
+        const client = await UsersClients.findOne({ where: { user_client_id: client_id } }); 
         if (!client) {
             return res.status(404).json({ message: 'Client not found' });
         }
@@ -85,24 +66,14 @@ exports.createCar = async (req, res) => {
 
 /**
  * Update an existing car by ID.
- * 
- * @function updateCar
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- * @returns {Object} res - Response object containing the updated car or an error message
  */
 exports.updateCar = async (req, res) => {
     try {
-        const { car_id, user_client_id } = req.params;
-        const { car_marque, car_modele, car_year, car_license_plate } = req.body;
-
-        const client = await Clients.findOne({ where: { client_id } });
-        if (!client) {
-            return res.status(404).json({ message: 'Client not found' });
-        }
+        const { car_id } = req.params; 
+        const { car_marque, car_modele, car_year, car_license_plate} = req.body; 
 
         const [updated] = await Cars.update(
-            { car_marque, car_modele, car_year,car_license_plate, fk_user_client_id: user_client_id },
+            { car_marque, car_modele, car_year, car_license_plate },
             { where: { car_id } }
         );
 
@@ -110,6 +81,7 @@ exports.updateCar = async (req, res) => {
             return res.status(404).json({ message: 'Car not found' });
         }
 
+        // Récupérer la voiture mise à jour
         const updatedCar = await Cars.findOne({ where: { car_id } });
         res.status(200).json(updatedCar);
     } catch (error) {
@@ -117,3 +89,4 @@ exports.updateCar = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+

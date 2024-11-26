@@ -67,7 +67,7 @@ exports.getUserClientById = async (req, res) => {
 exports.updateUserClient = async (req, res) => {
     const { user_client_id } = req.user;
     const { user_client_name, user_client_last_name, user_client_phone_number, user_client_address } = req.body;
-
+    console.log("user_client_id", user_client_id)
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
