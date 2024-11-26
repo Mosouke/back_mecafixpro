@@ -33,7 +33,8 @@ exports.getAllUsersClients = async (req, res) => {
 exports.getUserClientById = async (req, res) => {
     try {
         console.log("Client Controller")
-        const { user_client_id } = req.params;
+        const { user_client_id } = req.user;
+        console.log(user_client_id)
 
         const userClient = await UsersClients.findOne({
             where: { user_client_id },
