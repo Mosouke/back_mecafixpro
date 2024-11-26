@@ -86,10 +86,10 @@ const validateUserClientCreation = [
  * Validations pour la mise à jour d'un utilisateur client.
  */
 const validateUserClientUpdate = [
-    check('user_client_image_name')
-        .optional()
-        .isLength({ min: 1, max: 255 })
-        .withMessage('Le nom de fichier de l\'image doit comporter entre 1 et 255 caractères'),
+    // check('user_client_image_name')
+    //     .optional()
+    //     .isLength({ min: 1, max: 255 })
+    //     .withMessage('Le nom de fichier de l\'image doit comporter entre 1 et 255 caractères'),
 
     check('user_client_name')
         .optional() 

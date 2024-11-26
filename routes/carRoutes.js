@@ -13,7 +13,7 @@ router.use(authMiddleware);
  * @returns {Array.<Object>} 200 - An array of car objects.
  * @returns {Object} 500 - Internal server error.
  */
-router.get('/', carController.getCars);
+router.get('/', carController.getAllCars);
 
 /**
  * @route GET /cars/{car_id}

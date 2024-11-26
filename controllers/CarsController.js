@@ -13,7 +13,7 @@ const { Cars, UsersClients } = require('../Models');
  * @param {Object} res - Express response object
  * @returns {Object} res - Response object containing all cars or an error message
  */
-exports.getCars = async (req, res) => {
+exports.getAllCars = async (req, res) => {
     try {
         const cars = await Cars.findAll();
         res.status(200).json(cars);
@@ -33,7 +33,7 @@ exports.getCars = async (req, res) => {
  */
 exports.getCar = async (req, res) => {
     try {
-        const { car_id } = req.params;
+        const { car_id } = req.car;
         const car = await Cars.findOne({ where: { car_id } });
         if (!car) {
             return res.status(404).json({ message: 'Car not found' });
