@@ -19,7 +19,7 @@ exports.getAllCars = async (req, res) => {
  */
 exports.getCar = async (req, res) => {
     try {
-        const { car_id } = req.params;  // Change here to use req.params
+        const { car_id } = req.params;  
         const car = await Cars.findOne({ where: { car_id } });
         if (!car) {
             return res.status(404).json({ message: 'Car not found' });

@@ -7,6 +7,7 @@ const serviceRoutes = require('./routes/serviceRoutes');
 const specificServiceRoutes = require('./routes/specificServicesRoutes');
 const appointmentRoutes = require('./routes/appointmentRoutes');
 const clientRoutes = require('./routes/clientRoutes');
+const evaluationsRoutes = require('./routes/evaluationsRoutes');
 const cors = require('cors');
 const { sequelize, Roles } = require('./Models');
 const { body } = require('express-validator');
@@ -61,6 +62,7 @@ app.use('/api/garage', garageRoutes);
 app.use('/api/service', serviceRoutes);
 app.use('/api/specifiqueService', specificServiceRoutes);
 app.use('/api/appointment', appointmentRoutes);
+app.use('/api/evaluations', evaluationsRoutes);
 
 
 /**
