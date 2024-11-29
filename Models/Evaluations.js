@@ -20,7 +20,7 @@ const Evaluations = sequilize.define('evaluations', {
         allowNull: false    
     },
     fk_appt_id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         allowNull: false,
         references: {
             model: 'appointments',

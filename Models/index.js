@@ -5,6 +5,7 @@ const Garages = require('./Garages');
 const Services = require('./Services');
 const SpecificServices = require('./SpecificServices');
 const Appointments = require('./Appointments');
+const Evaluations = require('./Evaluations');
 const sequelize = require('../config/config');
 
 /**
@@ -31,6 +32,14 @@ Garages.hasMany(Services, { foreignKey: 'fk_garage_id', targetKey: 'garage_id' }
 
 SpecificServices.belongsTo(Services, { foreignKey: 'fk_service_id', targetKey: 'service_id' });
 Services.hasMany(SpecificServices, { foreignKey: 'fk_service_id', targetKey: 'service_id' });
+
+Appointments.belongsTo(UsersClients, { foreignKey: 'fk_user_client_id', targetKey: 'user_client_id' });
+UsersClients.hasMany(Appointments, { foreignKey: 'fk_user_client_id', targetKey: 'user_client_id' });
+
+Evaluations.belongsTo(Appointments, { foreignKey: 'fk_appt_id', targetKey: 'appt_id' });
+Appointments.hasMany(Evaluations, { foreignKey: 'fk_appt_id', targetKey: 'appt_id' });
+
+
 
 // Initialize roles
 async function initRoles() {
