@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const evaluationsController = require('../controllers/EvaluationsController');
-const { authMiddleware, adminMiddleware } = require('../middleware/auth');
+const { authMiddleware } = require('../middleware/auth');
 
 /**
  * @module routes/evaluations
@@ -45,7 +45,7 @@ router.post('/add', authMiddleware, evaluationsController.createEvaluation);
  * @returns {Evaluation} 200 - Évaluation mise à jour
  * @returns {Error}  default - Évaluation non trouvée ou échec de la mise à jour
  */
-router.put('/update/:eval_id', authMiddleware, adminMiddleware, evaluationsController.updateEvaluation);
+router.put('/update/:eval_id', authMiddleware, evaluationsController.updateEvaluation);
 
 /**
  * @route DELETE /evaluations/delete/{eval_id}
@@ -55,6 +55,6 @@ router.put('/update/:eval_id', authMiddleware, adminMiddleware, evaluationsContr
  * @returns {Success} 204 - Évaluation supprimée
  * @returns {Error}  default - Évaluation non trouvée ou échec de la suppression
  */
-router.delete('/delete/:eval_id', authMiddleware, adminMiddleware, evaluationsController.deleteEvaluation);
+router.delete('/delete/:eval_id', authMiddleware, evaluationsController.deleteEvaluation);
 
 module.exports = router;
