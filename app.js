@@ -48,7 +48,7 @@ app.options('*', cors({
 
 
 app.get("/", (req, res) => {
-    res.send("Route test OK v1.5");
+    res.send("Route test OK v1.6");
 });
 
 /**
@@ -113,7 +113,7 @@ async function initRoles() {
  */
 async function initApp() {
     try {
-        await sequelize.sync({ force: false, alter: true });
+        await sequelize.sync({ force: false, alter: false });
 
         await initRoles();
 
