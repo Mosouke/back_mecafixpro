@@ -13,7 +13,7 @@ const { Services, Garages } = require('../Models');
  * @param {Object} res - Express response object
  * @returns {Object} res - Response object containing all services or an error message
  */
-exports.getServices = async (req, res) => {
+exports.getAllServices = async (req, res) => {
     try {
         const services = await Services.findAll();
         res.status(200).json(services);
