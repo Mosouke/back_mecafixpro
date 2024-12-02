@@ -14,7 +14,7 @@ const { authMiddleware, adminMiddleware } = require('../middleware/auth');
  * @returns {Array.<Service>} 200 - An array of services
  * @returns {Error}  default - Unexpected error
  */
-router.get('/', serviceController.getServices);
+router.get('/', serviceController.getAllServices);
 
 /**
  * @route GET /services/{service_id}
