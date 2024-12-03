@@ -26,6 +26,14 @@ const Evaluations = sequilize.define('evaluations', {
             model: 'appointments',
             key: 'appt_id'
         }
+    },
+    fk_garage_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'Garages', // Nom de la table
+            key: 'garage_id',
+        },
     }
 });
 
