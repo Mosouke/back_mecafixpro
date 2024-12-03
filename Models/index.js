@@ -9,35 +9,34 @@ const Evaluations = require('./Evaluations');
 const sequelize = require('../config/config');
 
 // Establish relationships between models
-UsersClients.belongsTo(Roles, { foreignKey: 'role_id', as: 'userRoleAssociation' }); 
-Roles.hasMany(UsersClients, { foreignKey: 'role_id', as: 'clients' });
+UsersClients.belongsTo(Roles, { foreignKey: 'role_id'}); 
+Roles.hasMany(UsersClients, { foreignKey: 'role_id' });
 
-Cars.belongsTo(UsersClients, { foreignKey: 'fk_user_client_id', targetKey: 'user_client_id', as: 'owner' });
-UsersClients.hasMany(Cars, { foreignKey: 'fk_user_client_id', targetKey: 'user_client_id', as: 'userCars' });
+Cars.belongsTo(UsersClients, { foreignKey: 'fk_user_client_id', targetKey: 'user_client_id' });
+UsersClients.hasMany(Cars, { foreignKey: 'fk_user_client_id', targetKey: 'user_client_id'});
 
-Services.belongsTo(Garages, { foreignKey: 'fk_garage_id', targetKey: 'garage_id', as: 'garage' });
-Garages.hasMany(Services, { foreignKey: 'fk_garage_id', targetKey: 'garage_id', as: 'services' });
+Services.belongsTo(Garages, { foreignKey: 'fk_garage_id', targetKey: 'garage_id'});
+Garages.hasMany(Services, { foreignKey: 'fk_garage_id', targetKey: 'garage_id'});
 
-SpecificServices.belongsTo(Services, { foreignKey: 'fk_service_id', targetKey: 'service_id', as: 'generalService' });
-Services.hasMany(SpecificServices, { foreignKey: 'fk_service_id', targetKey: 'service_id', as: 'specificServices' });
+SpecificServices.belongsTo(Services, { foreignKey: 'fk_service_id', targetKey: 'service_id' });
+Services.hasMany(SpecificServices, { foreignKey: 'fk_service_id', targetKey: 'service_id' });
 
-Appointments.belongsTo(UsersClients, { foreignKey: 'fk_user_client_id', targetKey: 'user_client_id', as: 'client' });
-UsersClients.hasMany(Appointments, { foreignKey: 'fk_user_client_id', targetKey: 'user_client_id', as: 'appointments' });
+Appointments.belongsTo(UsersClients, { foreignKey: 'fk_user_client_id', targetKey: 'user_client_id' });
+UsersClients.hasMany(Appointments, { foreignKey: 'fk_user_client_id', targetKey: 'user_client_id' });
+Appointments.belongsTo(Garages, { foreignKey: 'fk_garage_id', targetKey: 'garage_id'});
+Garages.hasMany(Appointments, { foreignKey: 'fk_garage_id', targetKey: 'garage_id'});
 
-Appointments.belongsTo(Garages, { foreignKey: 'fk_garage_id', targetKey: 'garage_id', as: 'garage' });
-Garages.hasMany(Appointments, { foreignKey: 'fk_garage_id', targetKey: 'garage_id', as: 'appointments' });
+Appointments.belongsTo(Services, { foreignKey: 'fk_service_id', targetKey: 'service_id'});
+Services.hasMany(Appointments, { foreignKey: 'fk_service_id', targetKey: 'service_id'});
 
-Appointments.belongsTo(Services, { foreignKey: 'fk_service_id', targetKey: 'service_id', as: 'service' });
-Services.hasMany(Appointments, { foreignKey: 'fk_service_id', targetKey: 'service_id', as: 'appointments' });
+Appointments.belongsTo(SpecificServices, { foreignKey: 'fk_specific_service_id', targetKey: 'specificService_id' });
+SpecificServices.hasMany(Appointments, { foreignKey: 'fk_specific_service_id', targetKey: 'specificService_id'});
 
-Appointments.belongsTo(SpecificServices, { foreignKey: 'fk_specific_service_id', targetKey: 'specificService_id', as: 'specificService' });
-SpecificServices.hasMany(Appointments, { foreignKey: 'fk_specific_service_id', targetKey: 'specificService_id', as: 'appointments' });
+Evaluations.belongsTo(Appointments, { foreignKey: 'fk_appt_id', targetKey: 'appt_id'});
+Appointments.hasMany(Evaluations, { foreignKey: 'fk_appt_id', targetKey: 'appt_id'});
 
-Evaluations.belongsTo(Appointments, { foreignKey: 'fk_appt_id', targetKey: 'appt_id', as: 'appointment' });
-Appointments.hasMany(Evaluations, { foreignKey: 'fk_appt_id', targetKey: 'appt_id', as: 'evaluations' });
-
-Evaluations.belongsTo(Garages, { foreignKey: 'fk_garage_id', targetKey: 'garage_id', as: 'garage' });
-Garages.hasMany(Evaluations, { foreignKey: 'fk_garage_id', targetKey: 'garage_id', as: 'evaluations' });
+Evaluations.belongsTo(Garages, { foreignKey: 'fk_garage_id', targetKey: 'garage_id'});
+Garages.hasMany(Evaluations, { foreignKey: 'fk_garage_id', targetKey: 'garage_id'});
 
 // Initialize roles
 async function initRoles() {
