@@ -54,7 +54,7 @@ async function initRoles() {
 // Initialize database
 async function initDatabase() {
     try {
-        await sequelize.sync({ force: false, alter: false });
+        await sequelize.sync({ force: false, alter: true });
         await initRoles();
     } catch (error) {
         console.error('Error initializing database:', error);
