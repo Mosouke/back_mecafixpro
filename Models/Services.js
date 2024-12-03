@@ -36,11 +36,6 @@ const Services = sequelize.define('service', {
 // Importing Garages model to establish association
 const Garages = require('./Garages');
 
-/**
- * Establishes a relationship where each service belongs to a specific garage.
- * 
- * @type {Object}
- */
-Services.belongsTo(Garages, { foreignKey: 'fk_garage_id', targetKey: 'garage_id' });
+
 
 module.exports = Services;

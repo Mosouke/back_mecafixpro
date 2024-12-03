@@ -60,7 +60,7 @@ const Cars = sequelize.define('cars', {
     },
 
     /**
-     * La plaque d'immatriculation du véhicule.
+     * The car's license plate.
      * 
      * @type {string}
      */
@@ -86,6 +86,7 @@ const Cars = sequelize.define('cars', {
         allowNull: false,
     },
 });
+
 
 
 module.exports = Cars;
