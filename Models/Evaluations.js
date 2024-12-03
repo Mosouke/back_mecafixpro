@@ -28,7 +28,7 @@ const Evaluations = sequilize.define('evaluations', {
         }
     },
     fk_garage_id: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
         references: {
             model: 'Garages', // Nom de la table
