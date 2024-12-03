@@ -43,8 +43,16 @@ const Appointments = sequelize.define('appointments', {
      * @type {string}
      */
     appt_status: {
-        type: DataTypes.STRING,
+        type: DataTypes.ENUM(
+            'PLANIFIÉ', // Scheduled
+            'EN_COURS', // In Progress
+            'TERMINÉ', // Completed
+            'ANNULÉ', // Cancelled
+            'MODIFIÉ', // Modified
+            'EN_ATTENTE' // On Hold
+        ),
         allowNull: false,
+        defaultValue: 'PLANIFIÉ', // Default value
     },
     /**
      * Optional comments related to the appointment.
