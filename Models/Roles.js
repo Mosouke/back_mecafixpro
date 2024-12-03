@@ -33,7 +33,7 @@ const Roles = sequelize.define('roles', {
     indexes: [
         {
             unique: true,
-            fields: ['role_name'], 
+            fields: ['role_name'], // Gérer l'unicité via un index
         },
     ], 
 },{

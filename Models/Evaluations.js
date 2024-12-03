@@ -26,14 +26,6 @@ const Evaluations = sequilize.define('evaluations', {
             model: 'appointments',
             key: 'appt_id'
         }
-    },
-    fk_garage_id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'Garages', // Nom de la table
-            key: 'garage_id',
-        },
     }
 });
 

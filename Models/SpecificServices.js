@@ -34,14 +34,5 @@ const SpecificServices = sequelize.define('specificServices', {
     },
 });
 
-// Importing Services model to establish association
-const Services = require('./Services');
-
-/**
- * Establishes a relationship where each specific service belongs to a general service.
- * 
- * @type {Object}
- */
-SpecificServices.belongsTo(Services, { foreignKey: 'fk_service_id', targetKey: 'service_id' });
 
 module.exports = SpecificServices;
