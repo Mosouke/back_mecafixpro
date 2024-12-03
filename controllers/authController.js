@@ -84,10 +84,10 @@ exports.register = async (req, res) => {
             },
             car: {
                 id: newCar.car_id,
-                car_brand: newCar.car_marque,
-                car_model: newCar.car_modele,
+                car_marque: newCar.car_marque,
+                car_modele: newCar.car_modele,
                 car_year: newCar.car_year,
-                car_plate: newCar.car_license_plate,
+                car_license_plate: newCar.car_license_plate,
             }
         });
 
