@@ -113,7 +113,7 @@ async function initRoles() {
  */
 async function initApp() {
     try {
-        await sequelize.sync({ force: false, alter: true });
+        await sequelize.sync({ force: false, alter: false });
 
         await initRoles();
 
