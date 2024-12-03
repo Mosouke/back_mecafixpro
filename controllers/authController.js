@@ -1,7 +1,7 @@
 // @ts-nocheck
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { UsersClients, Roles } = require('../Models');
+const { UsersClients, Roles, Cars } = require('../Models');
 const { validationResult } = require('express-validator');
 
 const JWT_SECRET = process.env.JWT_SECRET;
