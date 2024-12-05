@@ -1,5 +1,6 @@
 // @ts-nocheck
 const Garages = require('../Models/Garages');
+const { Op } = require('sequelize');
 
 /**
  * @module controllers/garageController
@@ -13,7 +14,7 @@ const Garages = require('../Models/Garages');
  * @param {Object} res - Express response object
  * @returns {Object} res - Response object containing all garages or an error message
  */
-exports.getGarages = async (req, res) => {
+exports.getAllGarages = async (req, res) => {
     try {
         const garages = await Garages.findAll();
         res.status(200).json(garages);
@@ -34,16 +35,25 @@ exports.getGarages = async (req, res) => {
 exports.getGarage = async (req, res) => {
     try {
         const { garage_id } = req.params;
-        const garage = await Garages.findOne({ where: { garage_id } });
+
+        // Validation: Vérifiez si garage_id est un entier valide
+        if (!garage_id || isNaN(parseInt(garage_id, 10))) {
+            return res.status(400).json({ error: "Invalid garage ID" });
+        }
+
+        // Rechercher le garage par ID
+        const garage = await Garages.findOne({ where: { garage_id: parseInt(garage_id, 10) } });
         if (!garage) {
             return res.status(404).json({ message: 'Garage not found' });
         }
+
         res.status(200).json(garage);
     } catch (error) {
         console.error('Error fetching garage:', error);
         res.status(500).json({ error: error.message });
     }
 };
+
 
 /**
  * Create a new garage.
@@ -56,7 +66,7 @@ exports.getGarage = async (req, res) => {
 exports.createGarage = async (req, res) => {
     try {
         const { garage_name, garage_address, garage_phone, garage_city, garage_postal_code } = req.body;
-        
+
         if (!garage_name || !garage_address || !garage_phone || !garage_city || !garage_postal_code) {
             console.error('Missing required fields');
             return res.status(400).json({ message: 'Missing required fields' });
@@ -108,12 +118,12 @@ exports.updateGarage = async (req, res) => {
         */
 
         const [updated] = await Garages.update(
-            { 
-                garage_name, 
-                garage_address, 
-                garage_phone, 
-                garage_city, 
-                garage_postal_code, 
+            {
+                garage_name,
+                garage_address,
+                garage_phone,
+                garage_city,
+                garage_postal_code,
                 // fk_eval_id: eval_id // À décommenter plus tard si nécessaire
             },
             { where: { garage_id } }
@@ -141,17 +151,17 @@ exports.updateGarage = async (req, res) => {
  */
 exports.getGaragesByCity = async (req, res) => {
     try {
-        const { city } = req.params; 
+        const { city } = req.params;
         const garages = await Garages.findAll({
             where: {
-                garage_city: city 
+                garage_city: { [Op.like]: `${city}%` }
             }
         });
-        
+
         if (garages.length === 0) {
             return res.status(404).json({ message: 'No garages found in this city' });
         }
-        
+
         res.status(200).json(garages);
     } catch (error) {
         console.error('Error fetching garages by city:', error);

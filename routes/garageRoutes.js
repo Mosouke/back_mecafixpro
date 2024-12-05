@@ -3,7 +3,13 @@ const express = require('express');
 const router = express.Router();
 const garageController = require('../controllers/GaragesController');
 const { authMiddleware, adminMiddleware } = require('../middleware/auth');
-
+const validateGarageId = (req, res, next) => {
+    const { garage_id } = req.params;
+    if (!garage_id || isNaN(parseInt(garage_id, 10))) {
+        return res.status(400).json({ error: "Invalid garage ID" });
+    }
+    next();
+};
 /**
  * @module routes/garages
  */
@@ -14,7 +20,7 @@ const { authMiddleware, adminMiddleware } = require('../middleware/auth');
  * @returns {Array.<Garage>} 200 - An array of garages
  * @returns {Error}  default - Unexpected error
  */
-router.get('/', garageController.getGarages);
+router.get('/', garageController.getAllGarages);
 
 /**
  * @route GET /garages/{garage_id}
@@ -23,7 +29,10 @@ router.get('/', garageController.getGarages);
  * @returns {Garage} 200 - Un garage
  * @returns {Error}  default - Garage non trouvé
  */
-router.get('/:garage_id', garageController.getGarage);
+
+
+router.get('/garage/:garage_id', validateGarageId, garageController.getGarage);
+
 
 /**
  * @route GET /garages/city/{city}
