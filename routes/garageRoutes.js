@@ -31,7 +31,7 @@ router.get('/', garageController.getAllGarages);
  */
 
 
-router.get('/garage/:garage_id', validateGarageId, garageController.getGarage);
+router.get('/:garage_id', validateGarageId, garageController.getGarage);
 
 
 /**
