@@ -1,6 +1,7 @@
 // @ts-nocheck
 const Appointments = require('../Models/Appointments');
 
+
 /**
  * @module controllers/appointmentController
  */
@@ -33,7 +34,7 @@ exports.getAllAppointments = async (req, res) => {
  */
 exports.getAppointmentById = async (req, res) => {
     try {
-        const { appt_id } = req.params;  
+        const { appt_id } = req.params;
         if (!appt_id) {
             return res.status(400).json({ message: 'Appointment ID is missing' });
         }
@@ -58,19 +59,28 @@ exports.getAppointmentById = async (req, res) => {
  */
 exports.createAppointment = async (req, res) => {
     try {
-        const { appt_date_time, appt_status, appt_comment, fk_garage_id, fk_client_id, fk_service_id, fk_specific_service_id } = req.body;
 
-        if (!appt_date_time || !appt_status || !fk_garage_id || !fk_client_id || !fk_service_id || !fk_specific_service_id) {
+
+        const { appt_date_time, appt_comment, fk_garage_id, fk_service_id, fk_specific_service_id } = req.body;
+
+        // appt_status, fk_client_id,
+
+        const appt_status = "En attente";
+
+
+        if (!appt_date_time || !fk_garage_id || !fk_service_id || !fk_specific_service_id) {
             console.error('Missing required fields');
             return res.status(400).json({ message: 'Missing required fields' });
         }
+
+        // || appt_status,  ||fk_client_id,
 
         const appointment = await Appointments.create({
             appt_date_time,
             appt_status,
             appt_comment,
             fk_garage_id,
-            fk_client_id,
+            fk_client_id: req.user.user_client_id,
             fk_service_id,
             fk_specific_service_id
         });
