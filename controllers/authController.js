@@ -90,6 +90,7 @@ exports.register = async (req, res) => {
                 car_modele: newCar.car_modele,
                 car_year: newCar.car_year,
                 car_license_plate: newCar.car_license_plate,
+                fk_user_client_id: newUserClient.user_client_id,
             }
         });
 
