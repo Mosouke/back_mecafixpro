@@ -1,6 +1,8 @@
 // @ts-nocheck
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+const { sendEmail } = require('../services/emailService');
 const { UsersClients, Roles, Cars } = require('../Models');
 const { validationResult } = require('express-validator');
 
@@ -145,6 +147,42 @@ exports.login = async (req, res) => {
         return res.status(500).json({ error: 'Une erreur est survenue lors de la connexion.' });
     }
 };
+
+exports.forgotPassword = async (req, res) => {
+    const { mail_user_client } = req.body;
+  
+    try {
+      const user = await UsersClients.findOne({ where: { mail_user_client } });
+      if (!user) {
+        return res.status(404).json({ error: "Utilisateur non trouvé." });
+      }
+
+      const resetToken = crypto.randomBytes(32).toString("hex");
+  
+      user.reset_password_token = resetToken;
+      user.reset_password_expires = Date.now() + 3600000; // 1 heure
+      await user.save();
+  
+    
+      const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+      const message = `
+        <h1>Réinitialisation de votre mot de passe</h1>
+        <p>Bonjour ${user.user_client_name},</p>
+        <p>Cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe :</p>
+        <a href="${resetUrl}">Réinitialiser mon mot de passe</a>
+        <p>Ce lien expirera dans une heure.</p>
+      `;
+  
+     
+      await sendEmail(mail_user_client, "Réinitialisation du mot de passe", message);
+  
+      res.status(200).json({ message: "E-mail de réinitialisation envoyé." });
+  
+    } catch (error) {
+      console.error("Erreur lors de la récupération du mot de passe :", error);
+      res.status(500).json({ error: "Erreur du serveur. Réessayez plus tard." });
+    }
+  };
 
 /**
  * Vérifier la validité d'un token JWT.

@@ -1,5 +1,6 @@
 // @ts-nocheck
 const express = require('express');
+const { forgotPassword } = require("../controllers/authController");
 const router = express.Router();
 const authController = require('../controllers/authController');
 const { authMiddleware } = require('../middleware/auth');
@@ -34,5 +35,7 @@ router.post('/login', validateUserLogin, authController.login);
  * @returns {Object} 401 - Invalid or missing token.
  */
 router.get('/verify-token', authMiddleware, authController.verifyToken);
+
+router.post("/forgot-password", forgotPassword);
 
 module.exports = router;
