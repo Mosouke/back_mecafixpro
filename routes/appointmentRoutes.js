@@ -46,7 +46,7 @@ router.post('/add', authMiddleware, appointmentController.createAppointment);
  * @returns {Appointment} 200 - Rendez-vous mis à jour
  * @returns {Error}  default - Rendez-vous non trouvé ou mise à jour échouée
  */
-router.put('/update/:appt_id', authMiddleware, adminMiddleware, appointmentController.updateAppointment);
+router.put('/update/:appt_id', authMiddleware, appointmentController.updateAppointment);
 
 /**
  * @route DELETE /appointments/delete/{appt_id}
@@ -56,6 +56,6 @@ router.put('/update/:appt_id', authMiddleware, adminMiddleware, appointmentContr
  * @returns {Success} 204 - Rendez-vous supprimé
  * @returns {Error}  default - Rendez-vous non trouvé ou suppression échouée
  */
-router.delete('/delete/:appt_id', authMiddleware, adminMiddleware, appointmentController.deleteAppointment);
+router.delete('/delete/:appt_id', authMiddleware, appointmentController.deleteAppointment);
 
 module.exports = router;

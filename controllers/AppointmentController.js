@@ -59,38 +59,44 @@ exports.getAppointmentById = async (req, res) => {
  */
 exports.createAppointment = async (req, res) => {
     try {
-
-
         const { appt_date_time, appt_comment, fk_garage_id, fk_service_id, fk_specific_service_id } = req.body;
-
-        // appt_status, fk_client_id,
-
         const appt_status = "En attente";
 
-
+        // Vérification de la présence des champs obligatoires
         if (!appt_date_time || !fk_garage_id || !fk_service_id || !fk_specific_service_id) {
-            console.error('Missing required fields');
-            return res.status(400).json({ message: 'Missing required fields' });
+            return res.status(400).json({ message: 'Champs obligatoires manquants' });
         }
 
-        // || appt_status,  ||fk_client_id,
+        // Récupérer l'ID du client à partir du token (via le middleware)
+        const { user_client_id } = req.user;
 
+        // Vérifiez si l'utilisateur existe dans la base de données
+        const userExists = await UsersClients.findByPk(user_client_id);
+
+        if (!userExists) {
+            return res.status(400).json({ message: 'Utilisateur non trouvé dans la base de données' });
+        }
+
+        // Créer le rendez-vous
         const appointment = await Appointments.create({
             appt_date_time,
             appt_status,
             appt_comment,
             fk_garage_id,
-            fk_client_id: req.user.user_client_id,
+            fk_user_client_id: user_client_id,
             fk_service_id,
             fk_specific_service_id
         });
 
+        // Réponse avec l'objet rendez-vous créé
         res.status(201).json(appointment);
     } catch (error) {
-        console.error('Error creating appointment:', error);
+        console.error('Erreur lors de la création du rendez-vous:', error);
         res.status(500).json({ error: error.message });
     }
 };
+
+
 
 /**
  * Update an existing appointment.
