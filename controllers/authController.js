@@ -164,10 +164,10 @@ exports.forgotPassword = async (req, res) => {
       await user.save();
   
     
-      const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+      const resetUrl = `${process.env.BASE_URL}/reset-password?token=${resetToken}`;
       const message = `
         <h1>Réinitialisation de votre mot de passe</h1>
-        <p>Bonjour ${user.user_client_name},</p>
+        <p>Bonjour ${user.user_client_name ? user.user_client_name : user.mail_user_client},</p>
         <p>Cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe :</p>
         <a href="${resetUrl}">Réinitialiser mon mot de passe</a>
         <p>Ce lien expirera dans une heure.</p>

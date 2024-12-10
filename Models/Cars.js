@@ -67,7 +67,7 @@ const Cars = sequelize.define('cars', {
     car_license_plate: {
         type: DataTypes.STRING,
         allowNull: true,
-        unique: true,
+        // unique: true, a metre en unique plus tard
     },
 
     /**

@@ -1,9 +1,10 @@
 const Brevo = require('sib-api-v3-sdk');
 require('dotenv').config();
 
-// Configuration de l'API key Brevo
+// Configure l'API key avec la méthode correcte
+Brevo.ApiClient.instance.authentications['api-key'].apiKey = process.env.BREVO_API_KEY;
+
 const apiInstance = new Brevo.TransactionalEmailsApi();
-apiInstance.setApiKey(Brevo.TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY);
 
 // Fonction d'envoi d'e-mails
 async function sendEmail(toEmail, subject, message) {
