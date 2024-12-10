@@ -1,6 +1,6 @@
 // @ts-nocheck
 const Appointments = require('../Models/Appointments');
-
+const { UsersClients } = require('../Models');
 
 /**
  * @module controllers/appointmentController
@@ -69,6 +69,7 @@ exports.createAppointment = async (req, res) => {
 
         // Récupérer l'ID du client à partir du token (via le middleware)
         const { user_client_id } = req.user;
+        console.log(user_client_id);
 
         // Vérifiez si l'utilisateur existe dans la base de données
         const userExists = await UsersClients.findByPk(user_client_id);
