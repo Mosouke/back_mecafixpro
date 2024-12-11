@@ -11,6 +11,10 @@ const apiInstance = new Brevo.TransactionalEmailsApi();
 
 async function sendEmail(toEmail, subject, message) {
   try {
+    if (!email) {
+      return res.status(400).json({ error: "Email requis" });
+    }
+    
     const emailData = {
       sender: { name: "MecaFixPro", email: "nikodevweb@gmail.com" },
       to: [{ email: toEmail }],
@@ -23,7 +27,7 @@ async function sendEmail(toEmail, subject, message) {
     console.log("Email envoyé avec succès :", response);
     return response;
   } catch (error) {
-    console.error("Erreur lors de l'envoi :", error.response?.body || error);
+    console.error("Erreur lors de l'envoi de l'email :", error.message, error.stack);
     throw new Error("Échec de l'envoi de l'email.");
   }
 }
