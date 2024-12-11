@@ -1,35 +1,37 @@
 const Brevo = require('sib-api-v3-sdk');
 require('dotenv').config();
 
-// Configuration de l'API Client
 const defaultClient = Brevo.ApiClient.instance;
 const apiKey = defaultClient.authentications['api-key'];
-apiKey.apiKey = process.env.API_KEY_BREVO;
-console.log("API Key:", process.env.API_KEY_BREVO);
-
+apiKey.apiKey = process.env.API_KEY_BREVO;  
 const apiInstance = new Brevo.TransactionalEmailsApi();
 
-async function sendEmail(toEmail, subject, message) {
+async function sendPasswordResetEmail(toEmail, userName, resetUrl) {
   try {
-    if (!email) {
-      return res.status(400).json({ error: "Email requis" });
-    }
-    
+    const htmlContent = `
+      <h1>Réinitialisation de votre mot de passe</h1>
+      <p>Bonjour ${userName},</p>
+      <p>Vous avez demandé une réinitialisation de votre mot de passe.</p>
+      <p>Cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe :</p>
+      <a href="${resetUrl}">Réinitialiser mon mot de passe</a>
+      <p>Ce lien expirera dans une heure.</p>
+    `;
+
     const emailData = {
-      sender: { name: "MecaFixPro", email: "nikodevweb@gmail.com" },
-      to: [{ email: toEmail }],
-      subject: subject,
-      htmlContent: message,
+      sender: { name: "MecaFixPro", email: "nikodevweb@gmail.com" }, 
+      to: [{ email: toEmail }], 
+      subject: "Réinitialisation du mot de passe", 
+      htmlContent: htmlContent,  
     };
 
-    // Envoi de l'email
+  
     const response = await apiInstance.sendTransacEmail(emailData);
     console.log("Email envoyé avec succès :", response);
-    return response;
+    return response; 
   } catch (error) {
-    console.error("Erreur lors de l'envoi de l'email :", error.message, error.stack);
+    console.error("Erreur lors de l'envoi de l'email :", error.message);
     throw new Error("Échec de l'envoi de l'email.");
   }
 }
 
-module.exports = { sendEmail };
+module.exports = { sendPasswordResetEmail };
