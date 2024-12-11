@@ -22,6 +22,14 @@ const UsersClients = sequelize.define('users_clients', {
         type: DataTypes.STRING(255),
         allowNull: false
     },
+    reset_password_user_client_token : {
+        type: DataTypes.STRING(255),
+        allowNull: true
+    },
+    reset_password_user_client_expires : {
+        type: DataTypes.DATE,
+        allowNull: true
+    },
     user_client_name: {
         type: DataTypes.STRING(100),
         allowNull: true

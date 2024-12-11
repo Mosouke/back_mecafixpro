@@ -38,6 +38,6 @@ router.get('/verify-token', authMiddleware, authController.verifyToken);
 
 router.post("/forgot-password", authController.forgotPassword);
 
-router.post("/reset-password", authController.resetPassword);
+router.post("/password_reset", authController.resetPassword);
 
 module.exports = router;

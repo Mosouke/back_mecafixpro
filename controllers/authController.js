@@ -5,6 +5,7 @@ const crypto = require('crypto');
 const { sendPasswordResetEmail } = require('../services/emailService');
 const { UsersClients, Roles, Cars } = require('../Models');
 const { validationResult } = require('express-validator');
+const { Op } = require('sequelize');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const TOKEN_EXPIRATION = '1d';
