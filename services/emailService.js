@@ -4,7 +4,8 @@ require('dotenv').config();
 // Configuration de l'API Client
 const defaultClient = Brevo.ApiClient.instance;
 const apiKey = defaultClient.authentications['api-key'];
-apiKey.apiKey = process.env.BREVO_API_KEY;
+apiKey.apiKey = process.env.API_KEY_BREVO;
+console.log("API Key:", process.env.API_KEY_BREVO);
 
 const apiInstance = new Brevo.TransactionalEmailsApi();
 
