@@ -159,11 +159,11 @@ exports.forgotPassword = async (req, res) => {
       }
   
       const resetToken = crypto.randomBytes(32).toString("hex");
-      user.reset_password_token = resetToken;
-      user.reset_password_expires = Date.now() + 3600000;  // 1 heure
+      user.reset_password_user_client_token = resetToken;
+      user.reset_password_user_client_expires = Date.now() + 3600000;  // 1 heure
       await user.save();
   
-      const resetUrl = `${process.env.BASE_URL}/reset-password?token=${resetToken}`;
+      const resetUrl = `${process.env.BASE_URL}/password-reset?token=${resetToken}`;
 
       await sendPasswordResetEmail(mail_user_client, user.user_client_name, resetUrl);
  
@@ -171,6 +171,37 @@ exports.forgotPassword = async (req, res) => {
   
     } catch (error) {
       console.error("Erreur lors de la récupération du mot de passe :", error);
+      res.status(500).json({ error: "Erreur du serveur. Réessayez plus tard." });
+    }
+  };
+
+  exports.resetPassword = async (req, res) => {
+    const { resetToken, newPassword } = req.body;
+  
+    try {
+      // Recherche de l'utilisateur avec le token
+      const user = await UsersClients.findOne({
+        where: {
+          reset_password_user_client_token: resetToken,
+          reset_password_user_client_expires: {
+            [Op.gt]: Date.now(), // Vérifie que le token n'est pas expiré
+          },
+        },
+      });
+  
+      if (!user) {
+        return res.status(400).json({ error: "Token de réinitialisation invalide ou expiré." });
+      }
+  
+      const hashedPassword = await bcrypt.hash(newPassword, 12);
+      user.password_user_client = hashedPassword;  
+      user.reset_password_user_client_token = null;
+      user.reset_password_user_client_expires = null;
+      await user.save();
+  
+      res.status(200).json({ message: "Mot de passe réinitialisé avec succès." });
+    } catch (error) {
+      console.error("Erreur lors de la réinitialisation du mot de passe :", error);
       res.status(500).json({ error: "Erreur du serveur. Réessayez plus tard." });
     }
   };
