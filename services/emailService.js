@@ -1,12 +1,13 @@
 const Brevo = require('sib-api-v3-sdk');
 require('dotenv').config();
 
-// Configure l'API key avec la méthode correcte
-Brevo.ApiClient.instance.authentications['api-key'].apiKey = process.env.BREVO_API_KEY;
+// Configuration de l'API Client
+const defaultClient = Brevo.ApiClient.instance;
+const apiKey = defaultClient.authentications['api-key'];
+apiKey.apiKey = process.env.BREVO_API_KEY;
 
 const apiInstance = new Brevo.TransactionalEmailsApi();
 
-// Fonction d'envoi d'e-mails
 async function sendEmail(toEmail, subject, message) {
   try {
     const emailData = {
@@ -16,12 +17,12 @@ async function sendEmail(toEmail, subject, message) {
       htmlContent: message,
     };
 
-    // Envoi de l'email via Brevo
+    // Envoi de l'email
     const response = await apiInstance.sendTransacEmail(emailData);
-    console.log("Email envoyé :", response);
+    console.log("Email envoyé avec succès :", response);
     return response;
   } catch (error) {
-    console.error("Erreur d'envoi :", error);
+    console.error("Erreur lors de l'envoi :", error.response?.body || error);
     throw new Error("Échec de l'envoi de l'email.");
   }
 }
