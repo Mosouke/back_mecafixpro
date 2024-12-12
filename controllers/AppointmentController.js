@@ -1,6 +1,7 @@
 // @ts-nocheck
 const Appointments = require('../Models/Appointments');
 const { UsersClients, Garages, Services, SpecificServices } = require('../Models');
+const { sendAppointmentConfirmationEmail } = require('../services/emailService');
 
 
 /**
