@@ -37,6 +37,10 @@ async function sendPasswordResetEmail(toEmail, userName, resetUrl) {
 async function sendAppointmentConfirmationEmail(
   toEmail, userName, date, time, status, garageName, serviceName, specificServiceName
 ) {
+  if (!toEmail || !userName || !date || !time || !status || !garageName) {
+    throw new Error("Champs requis manquants pour l'email de confirmation.");
+  }
+  
   try {
       const htmlContent = `
           <h1>Confirmation de Rendez-vous</h1>
@@ -63,10 +67,11 @@ async function sendAppointmentConfirmationEmail(
       const response = await apiInstance.sendTransacEmail(emailData);
       console.log("Email envoyé avec succès :", response);
       return response;
-  } catch (error) {
-      console.error("Erreur lors de l'envoi de l'email :", error.message);
+    } catch (error) {
+      console.error("Erreur détaillée lors de l'envoi de l'email :", error.response?.body || error.message);
       throw new Error("Échec de l'envoi de l'email.");
-  }
+    }
+    
 }
 
 

@@ -67,8 +67,8 @@ exports.createAppointment = async (req, res) => {
             return res.status(400).json({ message: 'Champs obligatoires manquants' });
         }
 
-        const { user_client_id, user_client_email, user_client_name } = req.user;
-
+        const { user_client_id, mail_user_client, user_client_name } = req.user;
+        console.log("Infos Utilisateur :", req.user);
         const userExists = await UsersClients.findByPk(user_client_id);
         if (!userExists) {
             return res.status(400).json({ message: 'Utilisateur non trouvé dans la base de données' });
@@ -78,10 +78,9 @@ exports.createAppointment = async (req, res) => {
         if (!garage) {
             return res.status(400).json({ message: 'Garage introuvable' });
         }
-
         const service = await Services.findByPk(fk_service_id);
         const specificService = await SpecificServices.findByPk(fk_specific_service_id);
-
+       
         const appointment = await Appointments.create({
             appt_date_time,
             appt_status,
@@ -91,17 +90,18 @@ exports.createAppointment = async (req, res) => {
             fk_service_id,
             fk_specific_service_id
         });
-
-        await sendAppointmentConfirmationEmail(
-            user_client_email,
-            user_client_name,
+        
+          await sendAppointmentConfirmationEmail(
+            mail_user_client,
+            userExists.user_client_name,
             new Date(appt_date_time).toLocaleDateString(),
             new Date(appt_date_time).toLocaleTimeString(),
             appt_status,
             garage.garage_name,  
             service?.service_name,  
             specificService?.specific_service_name  
-        );
+          );
+          
 
         res.status(201).json(appointment);
     } catch (error) {
