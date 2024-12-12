@@ -62,23 +62,25 @@ exports.createAppointment = async (req, res) => {
         const { appt_date_time, appt_comment, fk_garage_id, fk_service_id, fk_specific_service_id } = req.body;
         const appt_status = "En attente";
 
-        // Vérification de la présence des champs obligatoires
         if (!appt_date_time || !fk_garage_id || !fk_service_id || !fk_specific_service_id) {
             return res.status(400).json({ message: 'Champs obligatoires manquants' });
         }
 
-        // Récupérer l'ID du client à partir du token (via le middleware)
-        const { user_client_id } = req.user;
-        console.log(user_client_id);
+        const { user_client_id, user_client_email, user_client_name } = req.user;
 
-        // Vérifiez si l'utilisateur existe dans la base de données
         const userExists = await UsersClients.findByPk(user_client_id);
-
         if (!userExists) {
             return res.status(400).json({ message: 'Utilisateur non trouvé dans la base de données' });
         }
 
-        // Créer le rendez-vous
+        const garage = await Garages.findByPk(fk_garage_id);
+        if (!garage) {
+            return res.status(400).json({ message: 'Garage introuvable' });
+        }
+
+        const service = await Services.findByPk(fk_service_id);
+        const specificService = await SpecificServices.findByPk(fk_specific_service_id);
+
         const appointment = await Appointments.create({
             appt_date_time,
             appt_status,
@@ -89,13 +91,24 @@ exports.createAppointment = async (req, res) => {
             fk_specific_service_id
         });
 
-        // Réponse avec l'objet rendez-vous créé
+        await sendAppointmentConfirmationEmail(
+            user_client_email,
+            user_client_name,
+            new Date(appt_date_time).toLocaleDateString(),
+            new Date(appt_date_time).toLocaleTimeString(),
+            appt_status,
+            garage.garage_name,  
+            service?.service_name,  
+            specificService?.specific_service_name  
+        );
+
         res.status(201).json(appointment);
     } catch (error) {
         console.error('Erreur lors de la création du rendez-vous:', error);
         res.status(500).json({ error: error.message });
     }
 };
+
 
 
 

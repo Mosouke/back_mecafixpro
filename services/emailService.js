@@ -34,4 +34,42 @@ async function sendPasswordResetEmail(toEmail, userName, resetUrl) {
   }
 }
 
-module.exports = { sendPasswordResetEmail };
+async function sendAppointmentConfirmationEmail(
+  toEmail, userName, date, time, status, garageName, serviceName, specificServiceName
+) {
+  try {
+      const htmlContent = `
+          <h1>Confirmation de Rendez-vous</h1>
+          <p>Bonjour ${userName},</p>
+          <p>Votre rendez-vous a été pris avec succès.</p>
+          <ul>
+              <li><strong>Date :</strong> ${date}</li>
+              <li><strong>Heure :</strong> ${time}</li>
+              <li><strong>Statut :</strong> ${status}</li>
+              <li><strong>Garage :</strong> ${garageName}</li>
+              ${serviceName ? `<li><strong>Service :</strong> ${serviceName}</li>` : ''}
+              ${specificServiceName ? `<li><strong>Service spécifique :</strong> ${specificServiceName}</li>` : ''}
+          </ul>
+          <p>Nous vous remercions de votre confiance.</p>
+      `;
+
+      const emailData = {
+          sender: { name: "MecaFixPro", email: "nikodevweb@gmail.com" },
+          to: [{ email: toEmail }],
+          subject: "Confirmation de votre Rendez-vous",
+          htmlContent: htmlContent,
+      };
+
+      const response = await apiInstance.sendTransacEmail(emailData);
+      console.log("Email envoyé avec succès :", response);
+      return response;
+  } catch (error) {
+      console.error("Erreur lors de l'envoi de l'email :", error.message);
+      throw new Error("Échec de l'envoi de l'email.");
+  }
+}
+
+
+module.exports = { sendPasswordResetEmail,
+                    sendAppointmentConfirmationEmail
+                  };
