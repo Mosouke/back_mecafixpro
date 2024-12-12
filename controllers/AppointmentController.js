@@ -1,7 +1,6 @@
 // @ts-nocheck
 const Appointments = require('../Models/Appointments');
-const { UsersClients, Garages, Services, SpecificServices } = require('../Models');
-const { sendAppointmentConfirmationEmail } = require('../services/emailService');
+const { UsersClients } = require('../Models');
 
 /**
  * @module controllers/appointmentController
@@ -68,7 +67,7 @@ exports.createAppointment = async (req, res) => {
         }
 
         const { user_client_id, mail_user_client, user_client_name } = req.user;
-        console.log("Infos Utilisateur :", req.user);
+        
         const userExists = await UsersClients.findByPk(user_client_id);
         if (!userExists) {
             return res.status(400).json({ message: 'Utilisateur non trouvé dans la base de données' });
@@ -109,7 +108,6 @@ exports.createAppointment = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-
 
 
 
