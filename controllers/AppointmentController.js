@@ -1,6 +1,7 @@
 // @ts-nocheck
 const Appointments = require('../Models/Appointments');
-const { UsersClients } = require('../Models');
+const { UsersClients, Garages, Services, SpecificServices } = require('../Models');
+
 
 /**
  * @module controllers/appointmentController
