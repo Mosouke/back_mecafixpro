@@ -1,6 +1,7 @@
 // @ts-nocheck
 const Appointments = require('../Models/Appointments');
 const { UsersClients, Garages, Services, SpecificServices } = require('../Models');
+const { sendAppointmentConfirmationEmail } = require('../services/emailService');
 
 /**
  * @module controllers/appointmentController
@@ -96,13 +97,13 @@ exports.createAppointment = async (req, res) => {
             new Date(appt_date_time).toLocaleDateString(),
             new Date(appt_date_time).toLocaleTimeString(),
             appt_status,
-            garage.garage_name,  
+            garage?.garage_name,  
             service?.service_name,  
             specificService?.specific_service_name  
           );
           
 
-        res.status(201).json(appointment);
+        res.status(201).json(appointment );
     } catch (error) {
         console.error('Erreur lors de la création du rendez-vous:', error);
         res.status(500).json({ error: error.message });
