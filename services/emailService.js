@@ -75,6 +75,7 @@ async function sendAppointmentConfirmationEmail(
 }
 
 
-module.exports = { sendPasswordResetEmail,
-                    sendAppointmentConfirmationEmail
-                  };
+module.exports = { 
+  sendPasswordResetEmail,
+  sendAppointmentConfirmationEmail
+};
