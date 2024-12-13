@@ -86,7 +86,7 @@ exports.createAppointment = async (req, res) => {
             return res.status(400).json({ message: 'Required fields missing' });
         }
 
-        const { user_client_id, mail_user_client, user_client_name } = req.user;
+        const { user_client_id, mail_user_client} = req.user;
 
         // Verify if the user exists
         const userExists = await UsersClients.findByPk(user_client_id);
