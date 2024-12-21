@@ -58,14 +58,46 @@ exports.register = async (req, res) => {
             role_id: clientRole.role_id,
         });
 
-        // Créer une voiture par défaut associée à l'utilisateur
-        const newCar = await Cars.create({
-            car_marque: 'Marque par défaut', 
-            car_modele: 'Modèle par défaut',
-            car_year: 2020, 
-            car_license_plate: 'AA-123-BB', 
-            fk_user_client_id: newUserClient.user_client_id,
-        });
+        // Fonction pour générer une plaque d'immatriculation aléatoire au format LL-NNNN-LL
+        const generateRandomLicensePlate = () => {
+            const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const numbers = '0123456789';
+            let plate = '';
+
+            // Deux lettres
+            plate += letters.charAt(Math.floor(Math.random() * letters.length));
+            plate += letters.charAt(Math.floor(Math.random() * letters.length));
+            plate += '-';
+
+            // Quatre chiffres (fixé)
+            for (let i = 0; i < 4; i++) {
+                plate += numbers.charAt(Math.floor(Math.random() * numbers.length));
+            }
+            plate += '-';
+
+            // Deux lettres
+            plate += letters.charAt(Math.floor(Math.random() * letters.length));
+            plate += letters.charAt(Math.floor(Math.random() * letters.length));
+
+            return plate;
+        };
+
+
+        let newCar;
+        do {
+            const licensePlate = generateRandomLicensePlate();
+            const carExists = await Cars.findOne({ where: { car_license_plate: licensePlate } });
+            if (!carExists) {
+                
+                newCar = await Cars.create({
+                    car_marque: 'Marque par défaut',
+                    car_modele: 'Modèle par défaut',
+                    car_year: 2020,
+                    car_license_plate: licensePlate,
+                    fk_user_client_id: newUserClient.user_client_id,
+                });
+            }
+        } while (!newCar);
 
         // Générer un token JWT
         const token = jwt.sign(
